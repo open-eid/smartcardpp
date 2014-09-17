@@ -1,0 +1,4 @@
+SmartcardPP version 3.8.1 release notes
+--------------------------------------
+
+- Fixed SmartcardPP log file location, the log is written to /tmp/smartcardpp.log 
