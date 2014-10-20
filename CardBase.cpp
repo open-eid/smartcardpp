@@ -359,11 +359,13 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 				#ifdef WIN32
 					Sleep(500);
 				#else
-					sleep(1);
+					sleep(5);
 				#endif
 
 				SCardLog::writeLog("[%i:%i][%s:%d] Reconnecting", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
-				mManager->reconnect();
+				//mManager->reconnect();
+                
+                mManager->resetCurrentConnection();
 			}
 			SCardLog::writeLog("[%i:%i][%s:%d] Executing", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
 			mManager->execCommand(cmd, RecvBuffer, realLen);

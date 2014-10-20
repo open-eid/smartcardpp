@@ -142,9 +142,7 @@ void PCSCManager::ensureReaders()
 	}
 #ifdef __APPLE__
 	for(size_t i = 0; i < mReaderStates.size(); i++)
-	{
-		SCError::check(SCardGetStatusChange(hContext, 0, &mReaderStates[i], 1), connectionID, transactionID);
-	}
+		SCError::check(SCardGetStatusChange(hContext, 5, &mReaderStates[i], 1), connectionID, transactionID);
 #else
 	SCError::check(SCardGetStatusChange(hContext, 0, &mReaderStates[0], DWORD(mReaderStates.size())), connectionID, transactionID);
 #endif
@@ -893,3 +891,21 @@ void PCSCManager::resetCurrentContext()
 	SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
 }
 
+void PCSCManager::resetCurrentConnection()
+{
+    log();
+    if (mOwnContext)
+    {
+        SCardLog::writeLog("[%i:%i][%s:%d] SCardReleaseContext", connectionID, transactionID, __FUNC__, __LINE__);
+        SCardReleaseContext(this->hContext);
+        
+        SCardLog::writeLog("[%i:%i][%s:%d] SCardEstablishContext", connectionID, transactionID, __FUNC__, __LINE__);
+        SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
+        
+        
+    }
+    
+    deleteConnection(true);
+    makeConnection(this->cIndex);
+    
+}

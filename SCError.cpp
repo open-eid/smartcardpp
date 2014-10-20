@@ -85,6 +85,11 @@ void SCError::check(long err, int cid, int tid)
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_SHARING_VIOLATION", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
+    else if((int)err == SCARD_E_TIMEOUT)
+    {
+        SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_TIMEOUT", cid, tid, __FUNC__, __LINE__, err);
+        return;
+    }
 
 	if (err)
 	{

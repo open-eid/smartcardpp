@@ -156,6 +156,7 @@ public:
 	bool isOwnConnection();
 	std::vector<std::string> getReadersList();
     void deleteContext(void);
+    void resetCurrentConnection();
 };
 
 class CardError: public std::runtime_error
