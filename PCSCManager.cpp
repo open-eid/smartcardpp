@@ -426,7 +426,7 @@ bool PCSCManager::isPinPad(uint idx)
 	feature_len /= sizeof(PCSC_TLV_STRUCTURE);
 	pcsc_tlv = (PCSC_TLV_STRUCTURE *)feature_buf;
 
-	for (i = 0; i < sizeof(feature_buf); i++)
+	for (i = 0; i < feature_len; i++)
 	{
 		if (pcsc_tlv[i].tag == FEATURE_VERIFY_PIN_DIRECT)
 		{
@@ -905,5 +905,5 @@ void PCSCManager::resetCurrentConnection()
     
     deleteConnection(true);
     makeConnection(this->cIndex);
-    
+    beginTransaction();
 }
