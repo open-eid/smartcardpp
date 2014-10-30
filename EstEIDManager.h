@@ -118,7 +118,6 @@ public:
 
 private:
 	bool noPinPad;
-    bool noExtAPDU;
 	PCSCManager *mManager;
 	CardBase *cBase;
 	ByteVec authCert;
@@ -150,7 +149,6 @@ private:
 	unsigned int getTransactionID();
 	unsigned int getConnectionID();
 	void checkPinPadDetection();
-    void checkExtendedAPDUSupport();
 public:
 	EstEIDManager();
 	EstEIDManager(unsigned int idx);

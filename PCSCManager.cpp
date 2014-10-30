@@ -901,8 +901,6 @@ void PCSCManager::resetCurrentConnection()
         
         SCardLog::writeLog("[%i:%i][%s:%d] SCardEstablishContext", connectionID, transactionID, __FUNC__, __LINE__);
         SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
-        
-        
     }
     
     deleteConnection(true);

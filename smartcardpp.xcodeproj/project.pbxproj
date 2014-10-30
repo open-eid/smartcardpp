@@ -1,0 +1,907 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		4D23A6CEFABE434191202AFC /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 2D51C23E7981492EBDCD154B /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				3AE4CB87CA34438A9C752D38 /* CMake Rules */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+		EAA92CD7431B4678B7B4B2E4 /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = AD0B87E0A3DF4C07ACBCDE83 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				175891DC4AE942469C5E1E4C /* CMake Rules */,
+			);
+			dependencies = (
+				FFCD7BD6A4684630B2E8F7B4 /* PBXTargetDependency */,
+				715F6E7364374198B4EC0F04 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		457152CC29B84621ABE7EEA4 /* locked_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D21C68A85A264433AFC5DD54 /* locked_allocator.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		4682E658A6F14B53866B0056 /* SCError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4E895D491F14ADEB10B4637 /* SCError.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		4C10783697034A6DBB565B6C /* EstEIDManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBCE2598C0814906BB4F9C44 /* EstEIDManager.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		6405D328A6CA4FA8A24C37A4 /* Certificate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AF3FB61CED2843968C55288C /* Certificate.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		9025CCE9A6EB4F99B4144851 /* PCSCManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5AB00296719F40698612322C /* PCSCManager.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		B5CD86DF77A3454181A5FEC6 /* CardBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 873CA5B81BE2405DA345C225 /* CardBase.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		D602FBF33B3C43EA82509A17 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411BD650951A4829ABC41A31 /* md5.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		EA314FAC8BDF4097915CE64A /* SCardLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DAE43BD85D6E4BF9BBFF5AE8 /* SCardLog.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+		EAC34E19CBD84AC795A0B5D0 /* types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F18449398A445B1B2539C5D /* types.cpp */; settings = {COMPILER_FLAGS = ""; }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		03DEA1527233436F91315223 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A776C1BFDD2D4F8D983753B3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9649A05EF9AD4BB3B764C9F9;
+			remoteInfo = smartcardpp;
+		};
+		8BFA7104902940FFB743D1E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A776C1BFDD2D4F8D983753B3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D23A6CEFABE434191202AFC;
+			remoteInfo = ZERO_CHECK;
+		};
+		D78C49C1101A441BBD6CEACB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A776C1BFDD2D4F8D983753B3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D23A6CEFABE434191202AFC;
+			remoteInfo = ZERO_CHECK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BDCC13E819F9114300EAF784 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		411BD650951A4829ABC41A31 /* md5.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = md5.cpp; sourceTree = SOURCE_ROOT; };
+		4F18449398A445B1B2539C5D /* types.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = types.cpp; sourceTree = SOURCE_ROOT; };
+		5AB00296719F40698612322C /* PCSCManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = PCSCManager.cpp; sourceTree = SOURCE_ROOT; };
+		873CA5B81BE2405DA345C225 /* CardBase.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = CardBase.cpp; sourceTree = SOURCE_ROOT; };
+		956C1FF3CD344ECFA5FB9DD9 /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		AF3FB61CED2843968C55288C /* Certificate.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = Certificate.cpp; sourceTree = SOURCE_ROOT; };
+		BDCC13EA19F9114300EAF784 /* startcardpp-test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "startcardpp-test"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4E895D491F14ADEB10B4637 /* SCError.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = SCError.cpp; sourceTree = SOURCE_ROOT; };
+		D21C68A85A264433AFC5DD54 /* locked_allocator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = locked_allocator.cpp; sourceTree = SOURCE_ROOT; };
+		DAE43BD85D6E4BF9BBFF5AE8 /* SCardLog.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = SCardLog.cpp; sourceTree = SOURCE_ROOT; };
+		ED1F41DCAC4148D88CD8A57D /* libsmartcardpp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libsmartcardpp.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBCE2598C0814906BB4F9C44 /* EstEIDManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = EstEIDManager.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BDCC13E719F9114300EAF784 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		45AE42478E994C08A42E1D3A /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				873CA5B81BE2405DA345C225 /* CardBase.cpp */,
+				AF3FB61CED2843968C55288C /* Certificate.cpp */,
+				FBCE2598C0814906BB4F9C44 /* EstEIDManager.cpp */,
+				5AB00296719F40698612322C /* PCSCManager.cpp */,
+				C4E895D491F14ADEB10B4637 /* SCError.cpp */,
+				DAE43BD85D6E4BF9BBFF5AE8 /* SCardLog.cpp */,
+				D21C68A85A264433AFC5DD54 /* locked_allocator.cpp */,
+				411BD650951A4829ABC41A31 /* md5.cpp */,
+				4F18449398A445B1B2539C5D /* types.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		9643796A91B345059EDABE00 /* ZERO_CHECK */ = {
+			isa = PBXGroup;
+			children = (
+				9B1A3BA7BF6745B8A1BBFBAF /* CMake Rules */,
+			);
+			name = ZERO_CHECK;
+			sourceTree = "<group>";
+		};
+		9B1A3BA7BF6745B8A1BBFBAF /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+		A2BA46B435B44739870623FC /* smartcardpp */ = {
+			isa = PBXGroup;
+			children = (
+				45AE42478E994C08A42E1D3A /* Source Files */,
+				956C1FF3CD344ECFA5FB9DD9 /* CMakeLists.txt */,
+			);
+			name = smartcardpp;
+			sourceTree = "<group>";
+		};
+		B00FEAA3CDB54A608E47B01C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		BDC0A99163A4438E80AACFAC /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				C9223C57F5394C8F88551233 /* ALL_BUILD */,
+				9643796A91B345059EDABE00 /* ZERO_CHECK */,
+				A2BA46B435B44739870623FC /* smartcardpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		BDCC13EB19F9114300EAF784 /* startcardpp-test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "startcardpp-test";
+			sourceTree = "<group>";
+		};
+		C222BBB9E3234D40A613E68D = {
+			isa = PBXGroup;
+			children = (
+				BDC0A99163A4438E80AACFAC /* Sources */,
+				B00FEAA3CDB54A608E47B01C /* Resources */,
+				BDCC13EB19F9114300EAF784 /* startcardpp-test */,
+				DE9783EBB0624F9588055B3B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C9223C57F5394C8F88551233 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				FF10D8A71C694D6FB71C3EEC /* CMake Rules */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		DE9783EBB0624F9588055B3B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ED1F41DCAC4148D88CD8A57D /* libsmartcardpp.a */,
+				BDCC13EA19F9114300EAF784 /* startcardpp-test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FF10D8A71C694D6FB71C3EEC /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9649A05EF9AD4BB3B764C9F9 /* smartcardpp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32456763FDE3400896B7CE69 /* Build configuration list for PBXNativeTarget "smartcardpp" */;
+			buildPhases = (
+				288552BF15004FAFA19255A1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				383965698A864C5383DD06DC /* PBXTargetDependency */,
+			);
+			name = smartcardpp;
+			productName = smartcardpp;
+			productReference = ED1F41DCAC4148D88CD8A57D /* libsmartcardpp.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		BDCC13E919F9114300EAF784 /* startcardpp-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDCC13F219F9114300EAF784 /* Build configuration list for PBXNativeTarget "startcardpp-test" */;
+			buildPhases = (
+				BDCC13E619F9114300EAF784 /* Sources */,
+				BDCC13E719F9114300EAF784 /* Frameworks */,
+				BDCC13E819F9114300EAF784 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "startcardpp-test";
+			productName = "startcardpp-test";
+			productReference = BDCC13EA19F9114300EAF784 /* startcardpp-test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A776C1BFDD2D4F8D983753B3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				TargetAttributes = {
+					BDCC13E919F9114300EAF784 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = CBC9408BACE34DA392F6AFAC /* Build configuration list for PBXProject "smartcardpp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C222BBB9E3234D40A613E68D;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EAA92CD7431B4678B7B4B2E4 /* ALL_BUILD */,
+				4D23A6CEFABE434191202AFC /* ZERO_CHECK */,
+				9649A05EF9AD4BB3B764C9F9 /* smartcardpp */,
+				BDCC13E919F9114300EAF784 /* startcardpp-test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		175891DC4AE942469C5E1E4C /* CMake Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake Rules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make -C /Users/anton.litovtsenko/src/smartcardpp -f /Users/anton.litovtsenko/src/smartcardpp/CMakeScripts/ALL_BUILD_cmakeRulesBuildPhase.make$CONFIGURATION all";
+			showEnvVarsInLog = 0;
+		};
+		3AE4CB87CA34438A9C752D38 /* CMake Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake Rules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make -C /Users/anton.litovtsenko/src/smartcardpp -f /Users/anton.litovtsenko/src/smartcardpp/CMakeScripts/ZERO_CHECK_cmakeRulesBuildPhase.make$CONFIGURATION all";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		288552BF15004FAFA19255A1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5CD86DF77A3454181A5FEC6 /* CardBase.cpp in Sources */,
+				6405D328A6CA4FA8A24C37A4 /* Certificate.cpp in Sources */,
+				4C10783697034A6DBB565B6C /* EstEIDManager.cpp in Sources */,
+				9025CCE9A6EB4F99B4144851 /* PCSCManager.cpp in Sources */,
+				4682E658A6F14B53866B0056 /* SCError.cpp in Sources */,
+				EA314FAC8BDF4097915CE64A /* SCardLog.cpp in Sources */,
+				457152CC29B84621ABE7EEA4 /* locked_allocator.cpp in Sources */,
+				D602FBF33B3C43EA82509A17 /* md5.cpp in Sources */,
+				EAC34E19CBD84AC795A0B5D0 /* types.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDCC13E619F9114300EAF784 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		383965698A864C5383DD06DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D23A6CEFABE434191202AFC /* ZERO_CHECK */;
+			targetProxy = D78C49C1101A441BBD6CEACB /* PBXContainerItemProxy */;
+		};
+		715F6E7364374198B4EC0F04 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D23A6CEFABE434191202AFC /* ZERO_CHECK */;
+			targetProxy = 8BFA7104902940FFB743D1E4 /* PBXContainerItemProxy */;
+		};
+		FFCD7BD6A4684630B2E8F7B4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9649A05EF9AD4BB3B764C9F9 /* smartcardpp */;
+			targetProxy = 03DEA1527233436F91315223 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0DC4212DCC1F4521AF1FF1E8 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk;
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp/build;
+			};
+			name = MinSizeRel;
+		};
+		1EEF47B3B41C49DA8E5B6E57 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = RelWithDebInfo;
+		};
+		259EA667B3DA4E15B7EBD1AC /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = RelWithDebInfo;
+		};
+		294905EC25834E78BC2E5F40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk;
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp/build;
+			};
+			name = Release;
+		};
+		2D10DEC859154BE481421741 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = "    -DNDEBUG  ";
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = smartcardpp;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = MinSizeRel;
+		};
+		41365DE9E3EA42B3813F87CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		5EA2BCF268EF477395D9AD8E /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = MinSizeRel;
+		};
+		712D89586E124C1582F9CD6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = "    ";
+				OTHER_CPLUSPLUSFLAGS = "    ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = smartcardpp;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		741F4CDEF2584D0B84E4C167 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		79AA9349EA4549538C15BF3C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		8308B0D31D254ADBB5619F0C /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = "       -DNDEBUG  ";
+				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = smartcardpp;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = RelWithDebInfo;
+		};
+		87FF295CAFAB4DAABE6565DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk;
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp/build;
+			};
+			name = Debug;
+		};
+		8998FE2E98AE4CD6ADE3A604 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = "    -DNDEBUG  ";
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = smartcardpp;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		BDCC13EE19F9114300EAF784 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BDCC13EF19F9114300EAF784 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BDCC13F019F9114300EAF784 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = MinSizeRel;
+		};
+		BDCC13F119F9114300EAF784 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = RelWithDebInfo;
+		};
+		C6CDA2E0841448699CA9E935 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		E6A2AF68E5C94453A27E40C0 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_CFLAGS = "  ";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = MinSizeRel;
+		};
+		EE8E35E427D34F788EE5B462 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk;
+				SYMROOT = /Users/anton.litovtsenko/src/smartcardpp/build;
+			};
+			name = RelWithDebInfo;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2D51C23E7981492EBDCD154B /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				741F4CDEF2584D0B84E4C167 /* Debug */,
+				79AA9349EA4549538C15BF3C /* Release */,
+				5EA2BCF268EF477395D9AD8E /* MinSizeRel */,
+				1EEF47B3B41C49DA8E5B6E57 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		32456763FDE3400896B7CE69 /* Build configuration list for PBXNativeTarget "smartcardpp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				712D89586E124C1582F9CD6F /* Debug */,
+				8998FE2E98AE4CD6ADE3A604 /* Release */,
+				2D10DEC859154BE481421741 /* MinSizeRel */,
+				8308B0D31D254ADBB5619F0C /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AD0B87E0A3DF4C07ACBCDE83 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41365DE9E3EA42B3813F87CB /* Debug */,
+				C6CDA2E0841448699CA9E935 /* Release */,
+				E6A2AF68E5C94453A27E40C0 /* MinSizeRel */,
+				259EA667B3DA4E15B7EBD1AC /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BDCC13F219F9114300EAF784 /* Build configuration list for PBXNativeTarget "startcardpp-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDCC13EE19F9114300EAF784 /* Debug */,
+				BDCC13EF19F9114300EAF784 /* Release */,
+				BDCC13F019F9114300EAF784 /* MinSizeRel */,
+				BDCC13F119F9114300EAF784 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		CBC9408BACE34DA392F6AFAC /* Build configuration list for PBXProject "smartcardpp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87FF295CAFAB4DAABE6565DA /* Debug */,
+				294905EC25834E78BC2E5F40 /* Release */,
+				0DC4212DCC1F4521AF1FF1E8 /* MinSizeRel */,
+				EE8E35E427D34F788EE5B462 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A776C1BFDD2D4F8D983753B3 /* Project object */;
+}
