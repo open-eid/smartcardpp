@@ -905,5 +905,4 @@ void PCSCManager::resetCurrentConnection()
     
     deleteConnection(true);
     makeConnection(this->cIndex);
-    beginTransaction();
 }
