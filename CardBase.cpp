@@ -135,7 +135,7 @@ CardBase::FCI CardBase::selectMF(bool ignoreFCI)
 		throw;
 	}
 	if (ignoreFCI) return FCI();
-	return parseFCI(code);;
+	return parseFCI(code);
 }
 
 int CardBase::selectDF(int fileID,bool ignoreFCI)
@@ -372,8 +372,10 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 			SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is: %i bytes", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__, realLen);
 			if(realLen < 2)
 			{
-			  SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is less then two bytes: %i", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__,  realLen);
-			  throw CardDataError("Zero-length input from cardmanager");
+                SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is less then two bytes: %i", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__,  realLen);
+                SW1 = 0x00;
+                SW2 = 0x00;
+                //throw CardDataError("Zero-length input from cardmanager");
 			}
 			RecvBuffer.resize(realLen);
 
@@ -412,8 +414,10 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 				SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is: %i bytes", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__, realLen);
 				if(realLen < 2)
 				{
-				  SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is less then two bytes: %i", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__,  realLen);
-				  throw CardDataError("Zero-length input from cardmanager");
+                    SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is less then two bytes: %i", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__,  realLen);
+                    SW1 = 0x00;
+                    SW2 = 0x00;
+				  //throw CardDataError("Zero-length input from cardmanager");
 				}
 				RecvBuffer.resize(realLen);
 
