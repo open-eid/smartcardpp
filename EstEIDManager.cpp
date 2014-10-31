@@ -48,6 +48,7 @@ EstEIDManager::EstEIDManager() : _card_version(VER_INVALID)
 		this->_card_version = EstEIDManager::VER_INVALID;
 		this->extAPDUSupported = false;
 		checkPinPadDetection();
+        checkExtendedAPDUSupport();
 	}
 	catch(...)
 	{
@@ -71,6 +72,7 @@ EstEIDManager::EstEIDManager(unsigned int idx) : _card_version(VER_INVALID)
 		this->_card_version = EstEIDManager::VER_INVALID;
 		this->extAPDUSupported = false;
 		checkPinPadDetection();
+        checkExtendedAPDUSupport();
 	}
 	catch(...)
 	{
@@ -92,6 +94,7 @@ EstEIDManager::EstEIDManager(std::string readerName) : _card_version(VER_INVALID
 	this->extAPDUSupported = false;
 	this->_card_version = EstEIDManager::VER_INVALID;
 	checkPinPadDetection();
+    checkExtendedAPDUSupport();
 }
 
 EstEIDManager::EstEIDManager(SCARDCONTEXT scardCTX, SCARDHANDLE scard) : _card_version(VER_INVALID)
@@ -109,6 +112,7 @@ EstEIDManager::EstEIDManager(SCARDCONTEXT scardCTX, SCARDHANDLE scard) : _card_v
 	this->_card_version = EstEIDManager::VER_INVALID;
 	this->extAPDUSupported = false;
 	checkPinPadDetection();
+    checkExtendedAPDUSupport();
 }
 
 void EstEIDManager::connect(unsigned int idx)
@@ -713,9 +717,10 @@ void EstEIDManager::reconnectWithT0()
 	log();
 	if(mManager == NULL)
 	  throw PCSCManagerFailure();
-	if (mManager->isOwnConnection())
+	if (mManager->isOwnConnection() && mManager->getProtocol() != SCARD_PROTOCOL_T0)
 	{
 		mManager->reconnect(SCARD_PROTOCOL_T0);
+        selectMF();
 	}
 }
 
@@ -732,6 +737,7 @@ void EstEIDManager::reconnectWithT1()
 			{
 				SCardLog::writeLog("[%i:%i][%s:%d] Current protocol T1. Reconnecting.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 				mManager->reconnect(SCARD_PROTOCOL_T1);
+                selectMF();
 				if(!mManager->isT1Protocol())
 					SCardLog::writeLog("[%i:%i][%s:%d] Something wrong. Failed to change protocol to T1", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 				else
@@ -1928,41 +1934,49 @@ void EstEIDManager::sendApplicationIdentifierV3_5()
 bool EstEIDManager::isExtAPDUSupported()
 {
 	log();
-	std::string readerName = mManager->getReaderName();
-	if(this->_card_version <= VER_3_0_UPPED_TO_3_4)
-	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Card is older than 3.5 %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, this->getCardName().c_str());
-		return false;
-	}
-	else
-	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Card 3.5 or newer and reader name is %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readerName.c_str());
-	}
+    
+#ifndef __APPLE__
+    
+    if(!noExtAPDU)
+    {
+        std::string readerName = mManager->getReaderName();
+        if(this->_card_version <= VER_3_0_UPPED_TO_3_4)
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Card is older than 3.5 %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, this->getCardName().c_str());
+            return false;
+        }
+        else
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Card 3.5 or newer and reader name is %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readerName.c_str());
+        }
 
-	if(readerName.find("OMNIKEY CardMan 1021") != std::string::npos)
-	{
-		return true;
-	}
-	if(readerName.find("OMNIKEY Smart Card Reader") != std::string::npos)
-	{
-		return true;
-	}
-	if(readerName.find("SCM Microsystems Inc. SCR33x USB") != std::string::npos)
-	{
-		return true;
-	}
-	if(readerName.find("Gemalto Ezio Shield") != std::string::npos)
-	{
-		return true;
-	}
-	if(readerName.find("Oz776") != std::string::npos)
-	{
-		return true;
-	}
-	if(readerName.find("Lenovo Integrated Smart Card Reader") != std::string::npos)
-	{
-		return true;
-	}
+        if(readerName.find("OMNIKEY CardMan 1021") != std::string::npos)
+        {
+            return true;
+        }
+        if(readerName.find("OMNIKEY Smart Card Reader") != std::string::npos)
+        {
+            return true;
+        }
+        if(readerName.find("SCM Microsystems Inc. SCR33x USB") != std::string::npos)
+        {
+            return true;
+        }
+        if(readerName.find("Gemalto Ezio Shield") != std::string::npos)
+        {
+            return true;
+        }
+        if(readerName.find("Oz776") != std::string::npos)
+        {
+            return true;
+        }
+        if(readerName.find("Lenovo Integrated Smart Card Reader") != std::string::npos)
+        {
+            return true;
+        }
+    }
+#endif
+    SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU not supported", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 	return false;
 }
 
@@ -2274,5 +2288,18 @@ void EstEIDManager::checkPinPadDetection()
 	{
 		noPinPad = false;
 	}
+}
+
+void EstEIDManager::checkExtendedAPDUSupport()
+{
+    if (getenv("SMARTCARDPP_NOEXTAPDU") != NULL)
+    {
+        SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU support turned off", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+        noExtAPDU = true;
+    }
+    else
+    {
+        noExtAPDU = false;
+    }
 }
 

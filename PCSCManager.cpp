@@ -781,7 +781,10 @@ int PCSCManager::getReaderLanguageId(void)
 
 int PCSCManager::getTransactionId(void)
 {
-	return transactionID;
+    if(!transactionID)
+        return 0;
+    else
+        return transactionID;
 }
 
 uint PCSCManager::getConnectionIndex()

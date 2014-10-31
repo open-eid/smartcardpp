@@ -6,7 +6,7 @@ using namespace std;
 CardTests::CardTests(void)
 {
 	testIntensity = 3;
-	constructorsCount = 1;
+	constructorsCount = 10;
 	selectedCardReader = 999;
 	selectedSecondCardReader = 999;
 	PIN1 = PinString("0090");
@@ -169,7 +169,8 @@ bool CardTests::constructorsTest(void)
 		printf("\r\n          OK\r\n");
 		printf(" 4");
 		
-		for(int i = 1; i <= testIntensity; i++)
+#ifdef WIN32
+        for(int i = 1; i <= testIntensity; i++)
 		{
 			for(int i = 0; i < constructorsCount; i++)
 			{
@@ -245,7 +246,7 @@ bool CardTests::constructorsTest(void)
 				}
 			}
 		}
-		
+#endif
 	}
 	catch(CardError &e)
 	{
@@ -291,301 +292,438 @@ bool CardTests::isInReaderTest(void)
 bool CardTests::getKeySize(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
 			unsigned int keySize = estEIDManager->getKeySize();
 			printf("%i,", keySize);
 			if(keySize == 1024 || keySize == 2048)
-				continue;
+				;
 			else
 			{
 				printf("\r\n Invalid key length: %i ", keySize);
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
+            
+            printf("\r\n          %i,", i);
+            keySize = estEIDManager2->getKeySize();
+            printf("%i,", keySize);
+            if(keySize == 1024 || keySize == 2048)
+                ;
+            else
+            {
+                printf("\r\n Invalid key length: %i ", keySize);
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::readCardIDTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
 			string cardID = estEIDManager->readCardID();
 			printf("%s", cardID.c_str());
 			if(cardID.length() == 11)
-				continue;
+				;
 			else
 			{
 				printf("\r\n Invalid card id length: %li [%s] ", cardID.length(), cardID.c_str());
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
+            
+            printf("\r\n          %i,", i);
+            string cardID2 = estEIDManager2->readCardID();
+            printf("%s", cardID2.c_str());
+            if(cardID2.length() == 11)
+                ;
+            else
+            {
+                printf("\r\n Invalid card id length: %li [%s] ", cardID2.length(), cardID2.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
-		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
-		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::readDocumentIDTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
 			string documentID = estEIDManager->readDocumentID();
 			printf("%s", documentID.c_str());
 			if(documentID.length() == 8 || documentID.length() == 9)
-				continue;
+				;
 			else
 			{
 				printf("\r\n Invalid document id length: %li [%s] ", documentID.length(), documentID.c_str());
-				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
+            
+            printf("\r\n          %i,", i);
+            string documentID2 = estEIDManager2->readDocumentID();
+            printf("%s", documentID2.c_str());
+            if(documentID2.length() == 8 || documentID2.length() == 9)
+                ;
+            else
+            {
+                printf("\r\n Invalid document id length: %li [%s] ", documentID2.length(), documentID2.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::readCardNameTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
 			string cardName = estEIDManager->readCardName(false);
 			printf("%s", cardName.c_str());
-			if(cardName.length() != 0)
-				continue;
+			if(cardName.length() == 0)
+            {
+                printf("\r\n Invalid card anme length: %li [%s] ", cardName.length(), cardName.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            
+            printf("\r\n          %i,", i);
+            string cardName2 = estEIDManager2->readCardName(false);
+            printf("%s", cardName2.c_str());
+            if(cardName2.length() == 0)
+            {
+                printf("\r\n Invalid card anme length: %li [%s] ", cardName2.length(), cardName2.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::readCardNameFirstNameFirstTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
 			string cardName = estEIDManager->readCardName(true);
 			printf("%s", cardName.c_str());
-			if(cardName.length() != 0)
-				continue;
-		}
+            if(cardName.length() == 0)
+            {
+                printf("\r\n Invalid card anme length: %li [%s] ", cardName.length(), cardName.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            
+            printf("\r\n          %i,", i);
+            string cardName2 = estEIDManager2->readCardName(true);
+            printf("%s", cardName2.c_str());
+            if(cardName2.length() == 0)
+            {
+                printf("\r\n Invalid card anme length: %li [%s] ", cardName2.length(), cardName2.c_str());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+        }
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
-		if(estEIDManager) if(estEIDManager) delete estEIDManager;
+		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
-		if(estEIDManager)
-			if(estEIDManager) delete estEIDManager;
+		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::readPersonalDataTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
-			vector<string> data;
+			vector<string> data, data2;
 			printf("\r\n          %i,", i);
 			bool lReturn = estEIDManager->readPersonalData(data);
-			if(lReturn == false)
+            bool lReturn2 = estEIDManager2->readPersonalData(data2);
+			if(lReturn == false || lReturn2 == false)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 
 			string surname = data[1];
-			if(surname.length() == 0)
+            string surname2 = data2[1];
+			if(surname.length() == 0 || surname2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string firstname = data[2];
-			if(firstname.length() == 0)
+            string firstname2 = data2[2];
+			if(firstname.length() == 0 || firstname2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
+            
 			string middlename = data[3];
+            string middlename2 = data2[3];
+            
 			string sex = data[4];
-			if(sex.length() == 0)
+            string sex2 = data2[4];
+			if(sex.length() == 0 || sex2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string citizen = data[5];
-			if(citizen.length() == 0)
+            string citizen2 = data2[5];
+			if(citizen.length() == 0 || citizen2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string birthdate = data[6];
-			if(birthdate.length() == 0)
+            string birthdate2 = data2[6];
+			if(birthdate.length() == 0 || birthdate2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string id = data[7];
-			if(id.length() == 0)
+            string id2 = data2[7];
+			if(id.length() == 0 || id2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string documentid = data[8];
-			if(documentid.length() == 0)
+            string documentid2 = data2[8];
+			if(documentid.length() == 0 || documentid2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			string expiry = data[9];
-			if(expiry.length() == 0)
+            string expiry2 = data2[9];
+			if(expiry.length() == 0 || expiry2.length() == 0)
 			{
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 
 			printf("Owner info: %s %s %s %s %s %s", firstname.c_str(), middlename.c_str(), surname.c_str(), sex.c_str(), citizen.c_str(), birthdate.c_str());
 			printf("\r\n          Card info: %s %s %s\r\n", id .c_str(), documentid.c_str(), expiry.c_str());
+            
+            printf("Owner info: %s %s %s %s %s %s", firstname2.c_str(), middlename2.c_str(), surname2.c_str(), sex2.c_str(), citizen2.c_str(), birthdate2.c_str());
+            printf("\r\n          Card info: %s %s %s\r\n", id2.c_str(), documentid2.c_str(), expiry2.c_str());
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::getKeyUsageCountersTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
-			dword authCounter = 0;
-			dword signCounter = 0;
+			dword authCounter, signCounter, authCounter2, signCounter2 = 0;
+
 			estEIDManager->getKeyUsageCounters(authCounter, signCounter);
 			printf(" Key usage counters: %ld %ld", authCounter, signCounter);
+            
+            estEIDManager2->getKeyUsageCounters(authCounter2, signCounter2);
+            printf(" Key usage counters: %ld %ld", authCounter2, signCounter2);
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::getAuthCertTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
@@ -595,36 +733,57 @@ bool CardTests::getAuthCertTest(void)
 			{
 				printf(" FAILED. Authentication certificate is too short: %li bytes", cert.size());
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			else
 			{
 				printf(" Success. Authentication certificate size: %li bytes", cert.size());
 			}
+            
+            printf("\r\n          %i,", i);
+            ByteVec cert2 = estEIDManager2->getAuthCert();
+            
+            if(cert2.size() < 1000)
+            {
+                printf(" FAILED. Authentication certificate is too short: %li bytes", cert2.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Authentication certificate size: %li bytes", cert2.size());
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::getSignCertTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          %i,", i);
@@ -633,40 +792,61 @@ bool CardTests::getSignCertTest(void)
 			{
 				printf(" FAILED. Signature certificate is too short: %li bytes", cert.size());
 				if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
 				return false;
 			}
 			else
 			{
 				printf(" Success. Signature certificate size: %li bytes", cert.size());
 			}
+            
+            printf("\r\n          %i,", i);
+            ByteVec cert2 = estEIDManager2->getSignCert();
+            if(cert2.size() < 1000)
+            {
+                printf(" FAILED. Signature certificate is too short: %li bytes", cert2.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Signature certificate size: %li bytes", cert2.size());
+            }
 		}
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSSL_HashOnly_WithAuthCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
 		estEIDManager->startTransaction();
+        estEIDManager2->startTransaction();
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          Calculating SSL with auth key. Hash only mode... %i,", i);
@@ -677,17 +857,33 @@ bool CardTests::calcSSL_HashOnly_WithAuthCert(void)
 			}
 			else
 				estEIDManager->enterPin(EstEIDManager::PIN_AUTH, PIN1, false);
+            
 			estEIDManager->sign_pkcs11(hash, EstEIDManager::SSL, EstEIDManager::AUTH);
 
 			printf(" Success.");
+            
+            printf("\r\n          Calculating SSL with auth key. Hash only mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN1 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_AUTH, "", false);
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_AUTH, PIN1, false);
+            
+            estEIDManager2->sign_pkcs11(hash, EstEIDManager::SSL, EstEIDManager::AUTH);
+            
+            printf(" Success.");
 		}
 		estEIDManager->endTransaction();
+        estEIDManager2->endTransaction();
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		estEIDManager->endTransaction();
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
@@ -695,80 +891,98 @@ bool CardTests::calcSSL_HashOnly_WithAuthCert(void)
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		estEIDManager->endTransaction();
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSSL_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		byte ret = 0x03;
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
-		/*bool operationSuccess = false;
-		while(!operationSuccess)
-		{*/
-			/*try
-			{*/
-				estEIDManager->startTransaction();
-				for(int i = 1; i <= testIntensity; i++)
-				{
-					printf("\r\n          Calculating SSL with sign key. Hash only mode... %i,", i);
-					if(estEIDManager->isSecureConnection())
-					{
-						printf(" PIN2 ");
-						estEIDManager->validateSignPin("", ret);
-					}
-					else
-						estEIDManager->validateSignPin(PIN2, ret);
 
-					estEIDManager->sign(hash, EstEIDManager::SSL, EstEIDManager::SIGN);
-					printf(" Success.");
-				}
-				estEIDManager->endTransaction();
-			//}
-		//}
+        estEIDManager->startTransaction();
+        estEIDManager2->startTransaction();
+        for(int i = 1; i <= testIntensity; i++)
+        {
+            printf("\r\n          Calculating SSL with sign key. Hash only mode... %i,", i);
+            if(estEIDManager->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager->validateSignPin("", ret);
+            }
+            else
+                estEIDManager->validateSignPin(PIN2, ret);
+
+            estEIDManager->sign(hash, EstEIDManager::SSL, EstEIDManager::SIGN);
+            printf(" Success.");
+            
+            printf("\r\n          Calculating SSL with sign key. Hash only mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->validateSignPin("", ret);
+            }
+            else
+                estEIDManager2->validateSignPin(PIN2, ret);
+            
+            estEIDManager2->sign(hash, EstEIDManager::SSL, EstEIDManager::SIGN);
+            printf(" Success.");
+        }
+        estEIDManager->endTransaction();
+        estEIDManager2->endTransaction();
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("SW1: 0x%X SW2: 0x%X ", e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSSL_WithPIN_WithAuthCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
@@ -784,46 +998,56 @@ bool CardTests::calcSSL_WithPIN_WithAuthCert(void)
 			else
 				ByteVec ssl = estEIDManager->sign(hash, EstEIDManager::SSL, EstEIDManager::AUTH, PIN1);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating SSL with auth key. Hash & PIN mode... %i,", i);
+            
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN1 ");
+                ByteVec ssl = estEIDManager2->sign(hash, EstEIDManager::SSL, EstEIDManager::AUTH, "");
+            }
+            else
+                ByteVec ssl = estEIDManager2->sign(hash, EstEIDManager::SSL, EstEIDManager::AUTH, PIN1);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA1_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
-
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
-		{
-			printf(" Won`t test.");
-			return true;
-		}
 
 		for(int i = 1; i <= testIntensity; i++)
 		{
@@ -839,37 +1063,57 @@ bool CardTests::calcSignSHA1_HashOnly_WithSignCert(void)
 			estEIDManager->sign(hash, EstEIDManager::SHA1, EstEIDManager::SIGN);
 			estEIDManager->endTransaction();
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA1 with sign key. Hash only mode... %i,", i);
+            estEIDManager2->startTransaction();
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            estEIDManager2->sign(hash, EstEIDManager::SHA1, EstEIDManager::SIGN);
+            estEIDManager2->endTransaction();
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA1_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[20] = {0x6c, 0x39, 0x71, 0xdb, 0xf5, 0x50, 0xa6, 0x72, 0x92, 0xaa, 0xf5, 0x19, 0x34, 0x6e, 0x84, 0x34, 0xc1, 0x11, 0x7f, 0x9b};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
@@ -884,42 +1128,60 @@ bool CardTests::calcSignSHA1_WithPIN_WithSignCert(void)
 			else
 				estEIDManager->sign(hash, EstEIDManager::SHA1, EstEIDManager::SIGN, PIN2);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA1 with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::SHA1, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::SHA1, EstEIDManager::SIGN, PIN2);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
-	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA224_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[28] = {0x22, 0x12, 0x69, 0x96, 0x1d, 0x5a, 0x1f, 0xee, 0x3f, 0x9b, 
 							 0x98, 0xf4, 0x2c, 0x58, 0x72, 0xa0, 0xa9, 0x06, 0x02, 0x98, 
 							 0xab, 0x55, 0xa2, 0xf9, 0x78, 0xed, 0x20, 0xe0};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
+		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
 		{
 			printf(" Won`t test.");
 			return true;
@@ -939,6 +1201,18 @@ bool CardTests::calcSignSHA224_HashOnly_WithSignCert(void)
 
 			estEIDManager->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN);
 			estEIDManager->endTransaction();
+            
+            estEIDManager2->startTransaction();
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            
+            estEIDManager2->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN);
+            estEIDManager2->endTransaction();
 			printf(" Success.");
 		}
 	}
@@ -946,31 +1220,38 @@ bool CardTests::calcSignSHA224_HashOnly_WithSignCert(void)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA224_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[28] = {0x22, 0x12, 0x69, 0x96, 0x1d, 0x5a, 0x1f, 0xee, 0x3f, 0x9b, 
 							 0x98, 0xf4, 0x2c, 0x58, 0x72, 0xa0, 0xa9, 0x06, 0x02, 0x98, 
 							 0xab, 0x55, 0xa2, 0xf9, 0x78, 0xed, 0x20, 0xe0};
@@ -987,54 +1268,71 @@ bool CardTests::calcSignSHA224_WithPIN_WithSignCert(void)
 			else
 				estEIDManager->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN, PIN2);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA224 hash with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN, PIN2);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA256_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+        
+        if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
+        {
+            printf(" Won`t test.");
+            return true;
+        }
+
 		byte hashByte[32] = {0x0b, 0x67, 0xfe, 0x78, 0x15, 0x5d, 0x63, 0x22, 0xce, 0xb8, 
 							 0x28, 0x5f, 0xe1, 0x1d, 0x93, 0x45, 0xea, 0xce, 0x9f, 0x8f, 
 							 0x6a, 0xf8, 0x1f, 0xf0, 0x17, 0x87, 0x99, 0x1c, 0x54, 0x3f, 
 							 0x94, 0xf8};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
-		{
-			printf(" Won`t test.");
-			return true;
-		}
-
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          Calculating signature for SHA256 with sign key. Hash only mode... %i,", i);
 			estEIDManager->startTransaction();
+            estEIDManager2->startTransaction();
+            
 			if(estEIDManager->isSecureConnection())
 			{
 				printf(" PIN2 ");
@@ -1044,7 +1342,19 @@ bool CardTests::calcSignSHA256_HashOnly_WithSignCert(void)
 				estEIDManager->enterPin(EstEIDManager::PIN_SIGN, PIN2);
 
 			estEIDManager->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN);
-			estEIDManager->endTransaction();
+            
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            
+            estEIDManager2->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN);
+            
+            estEIDManager->endTransaction();
+			estEIDManager2->endTransaction();
 			printf(" Success.");
 		}
 	}
@@ -1052,31 +1362,43 @@ bool CardTests::calcSignSHA256_HashOnly_WithSignCert(void)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA256_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+        
+        if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
+        {
+            printf(" Won`t test.");
+            return true;
+        }
+
 		byte hashByte[32] = {0x0b, 0x67, 0xfe, 0x78, 0x15, 0x5d, 0x63, 0x22, 0xce, 0xb8, 
 							 0x28, 0x5f, 0xe1, 0x1d, 0x93, 0x45, 0xea, 0xce, 0x9f, 0x8f, 
 							 0x6a, 0xf8, 0x1f, 0xf0, 0x17, 0x87, 0x99, 0x1c, 0x54, 0x3f, 
@@ -1095,37 +1417,54 @@ bool CardTests::calcSignSHA256_WithPIN_WithSignCert(void)
 				estEIDManager->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN, PIN2);
 
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA256 hash with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN, PIN2);
+            
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA384_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[48] = {0xa3, 0xb7, 0xb4, 0xe4, 0xa7, 0xbf, 0xfa, 0x39, 0xc2, 0xa7, 
 							 0x6c, 0xf8, 0x76, 0xe6, 0x42, 0xee, 0x57, 0x99, 0x12, 0x67, 
 							 0xe5, 0xdd, 0xdd, 0xc1, 0xd8, 0xa9, 0x45, 0x04, 0xb9, 0x5b, 
@@ -1133,8 +1472,7 @@ bool CardTests::calcSignSHA384_HashOnly_WithSignCert(void)
 							 0xd5, 0x70, 0x7a, 0x57, 0xda, 0xc7, 0x42, 0x60};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
+		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
 		{
 			printf(" Won`t test.");
 			return true;
@@ -1155,37 +1493,63 @@ bool CardTests::calcSignSHA384_HashOnly_WithSignCert(void)
 			estEIDManager->sign(hash, EstEIDManager::SHA384, EstEIDManager::SIGN);
 			estEIDManager->endTransaction();
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA384 with sign key. Hash only mode... %i,", i);
+            estEIDManager2->startTransaction();
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            
+            estEIDManager2->sign(hash, EstEIDManager::SHA384, EstEIDManager::SIGN);
+            estEIDManager2->endTransaction();
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA384_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+        
+        if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
+        {
+            printf(" Won`t test.");
+            return true;
+        }
+
 		byte hashByte[48] = {0xa3, 0xb7, 0xb4, 0xe4, 0xa7, 0xbf, 0xfa, 0x39, 0xc2, 0xa7, 
 							 0x6c, 0xf8, 0x76, 0xe6, 0x42, 0xee, 0x57, 0x99, 0x12, 0x67, 
 							 0xe5, 0xdd, 0xdd, 0xc1, 0xd8, 0xa9, 0x45, 0x04, 0xb9, 0x5b, 
@@ -1204,37 +1568,54 @@ bool CardTests::calcSignSHA384_WithPIN_WithSignCert(void)
 			else
 				estEIDManager->sign(hash, EstEIDManager::SHA384, EstEIDManager::SIGN, PIN2);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA384 hash with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::SHA384, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::SHA384, EstEIDManager::SIGN, PIN2);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA512_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[48] = {0xa3, 0xb7, 0xb4, 0xe4, 0xa7, 0xbf, 0xfa, 0x39, 0xc2, 0xa7, 
 							 0x6c, 0xf8, 0x76, 0xe6, 0x42, 0xee, 0x57, 0x99, 0x12, 0x67, 
 							 0xe5, 0xdd, 0xdd, 0xc1, 0xd8, 0xa9, 0x45, 0x04, 0xb9, 0x5b, 
@@ -1242,8 +1623,7 @@ bool CardTests::calcSignSHA512_HashOnly_WithSignCert(void)
 							 0xd5, 0x70, 0x7a, 0x57, 0xda, 0xc7, 0x42, 0x60};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
+		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
 		{
 			printf(" Won`t test.");
 			return true;
@@ -1270,31 +1650,38 @@ bool CardTests::calcSignSHA512_HashOnly_WithSignCert(void)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignSHA512_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[48] = {0xa3, 0xb7, 0xb4, 0xe4, 0xa7, 0xbf, 0xfa, 0x39, 0xc2, 0xa7, 
 							 0x6c, 0xf8, 0x76, 0xe6, 0x42, 0xee, 0x57, 0x99, 0x12, 0x67, 
 							 0xe5, 0xdd, 0xdd, 0xc1, 0xd8, 0xa9, 0x45, 0x04, 0xb9, 0x5b, 
@@ -1313,41 +1700,56 @@ bool CardTests::calcSignSHA512_WithPIN_WithSignCert(void)
 			else
 				estEIDManager->sign(hash, EstEIDManager::SHA512, EstEIDManager::SIGN, PIN2);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating signature for SHA512 hash with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::SHA512, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::SHA512, EstEIDManager::SIGN, PIN2);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignMD5_HashOnly_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
-		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007 || 
-			estEIDManager->getCardVersion() == EstEIDManager::VER_3_5 || estEIDManager->getCardVersion() == EstEIDManager::VER_3_5_1)
+		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 || estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
 		{
 			printf(" Won`t test.");
 			return true;
@@ -1357,6 +1759,8 @@ bool CardTests::calcSignMD5_HashOnly_WithSignCert(void)
 		{
 			printf("\r\n          Calculating MD5 with sign key. Hash only mode... %i,", i);
 			estEIDManager->startTransaction();
+            estEIDManager2->startTransaction();
+            
 			if(estEIDManager->isSecureConnection())
 			{
 				printf(" PIN2 ");
@@ -1366,7 +1770,19 @@ bool CardTests::calcSignMD5_HashOnly_WithSignCert(void)
 				estEIDManager->enterPin(EstEIDManager::PIN_SIGN, PIN2);
 
 			estEIDManager->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN);
-			estEIDManager->endTransaction();
+            
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            
+            estEIDManager2->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN);
+			
+            estEIDManager->endTransaction();
+            estEIDManager2->endTransaction();
 			printf(" Success.");
 		}
 	}
@@ -1374,31 +1790,38 @@ bool CardTests::calcSignMD5_HashOnly_WithSignCert(void)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::calcSignMD5_WithPIN_WithSignCert(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+
 		byte hashByte[20] = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x40, 0x49, 0x49, 0x47, 0x33, 0x12, 0x45, 0x23, 0x56, 0x45};
 		ByteVec hash(MAKEVECTOR(hashByte));
 
@@ -1413,36 +1836,53 @@ bool CardTests::calcSignMD5_WithPIN_WithSignCert(void)
 			else
 				estEIDManager->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN, PIN2);
 			printf(" Success.");
+            
+            printf("\r\n          Calculating MD5 with sign key. Hash & PIN mode... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN, "");
+            }
+            else
+                estEIDManager2->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN, PIN2);
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::validateAuthPIN(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		byte ret = 0x03;
 
 		for(int i = 1; i <= testIntensity; i++)
@@ -1451,43 +1891,86 @@ bool CardTests::validateAuthPIN(void)
 			if(estEIDManager->isSecureConnection())
 			{
 				printf(" PIN1 ");
-				estEIDManager->validateAuthPin("", ret);
+				if(!estEIDManager->validateAuthPin("", ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
 			}
 			else
 			{
-				estEIDManager->validateAuthPin(PIN1, ret);
+				if(!estEIDManager->validateAuthPin(PIN1, ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
 			}
 			printf(" Success.");
+            
+            printf("\r\n          Validating AUTH PIN... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN1 ");
+                if(!estEIDManager2->validateAuthPin("", ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
+            }
+            else
+            {
+                if(!estEIDManager2->validateAuthPin(PIN1, ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
+            }
+            printf(" Success.");
 		}
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
-		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
-		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
-		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
-	if(estEIDManager) delete estEIDManager;
+    if(estEIDManager) delete estEIDManager;
+    if(estEIDManager2) delete estEIDManager2;
 	return true;
 }
 
 bool CardTests::validateSignPIN(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		byte ret = 0x03;
 
 		for(int i = 1; i <= testIntensity; i++)
@@ -1496,36 +1979,75 @@ bool CardTests::validateSignPIN(void)
 			if(estEIDManager->isSecureConnection())
 			{
 				printf(" PIN2 ");
-				estEIDManager->validateSignPin("", ret);
+				if(!estEIDManager->validateSignPin("", ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
 			}
 			else
 			{
-				estEIDManager->validateSignPin(PIN2, ret);
+				if(!estEIDManager->validateSignPin(PIN2, ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
 			}
 			printf(" Success.");
+            
+            printf("\r\n          Validating SIGN PIN... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                if(!estEIDManager2->validateSignPin("", ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
+            }
+            else
+            {
+                if(!estEIDManager2->validateSignPin(PIN2, ret))
+                {
+                    printf("\r\n          PIN verification failed");
+                    if(estEIDManager) delete estEIDManager;
+                    if(estEIDManager2) delete estEIDManager2;
+                    return false;
+                }
+            }
+            printf(" Success.");
 		}
-		return true;
 	}
 	catch(AuthError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
-	return false;
+    if(estEIDManager2) delete estEIDManager2;
+	return true;
 }
 
 bool CardTests::validatePUK(void)
@@ -1593,7 +2115,12 @@ bool CardTests::changePIN1(void)
 			}
 			else
 			{
-				bool lReturn = estEIDManager->changeAuthPin(PIN1, tempPIN1, ret);
+				if(!estEIDManager->changeAuthPin(PIN1, tempPIN1, ret))
+                {
+                    printf(" EstEIDManager::changePUK returned false.");
+                    if(estEIDManager) delete estEIDManager;
+                    return false;
+                }
 			}
 			printf(" Success.");
 		}
@@ -1634,7 +2161,12 @@ bool CardTests::changePIN2(void)
 			}
 			else
 			{
-				bool lReturn = estEIDManager->changeSignPin(PIN2, tempPIN2, ret);
+				if(!estEIDManager->changeSignPin(PIN2, tempPIN2, ret))
+                {
+                    printf(" EstEIDManager::changePUK returned false.");
+                    if(estEIDManager) delete estEIDManager;
+                    return false;
+                }
 			}
 			printf(" Success.");
 		}
@@ -1675,7 +2207,12 @@ bool CardTests::changePUK(void)
 			}
 			else
 			{
-				bool lReturn = estEIDManager->changePUK(PUK, tempPUK, ret);
+				if(!estEIDManager->changePUK(PUK, tempPUK, ret))
+                {
+                    printf(" EstEIDManager::changePUK returned false.");
+                    if(estEIDManager) delete estEIDManager;
+                    return false;
+                }
 			}
 			printf(" Success.");
 		}
@@ -1702,7 +2239,6 @@ bool CardTests::getRetryCounts(void)
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
 
 		for(int i = 1; i <= testIntensity; i++)
 		{
@@ -1762,7 +2298,7 @@ bool CardTests::resetAuth(void)
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
+
 		printf(" Reader %s.", estEIDManager->getReaderName().c_str());
 		if(estEIDManager->getCardVersion() == EstEIDManager::VER_1_0 ||
 			estEIDManager->getCardVersion() == EstEIDManager::VER_1_0_2007)
@@ -1828,8 +2364,7 @@ bool CardTests::cardChallengeTest(void)
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
-		byte ret = 0x03;
-
+        
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			printf("\r\n          Reading challenges... %i, \r\n", i);
@@ -2376,7 +2911,12 @@ bool CardTests::unblockPIN1(void)
 			}
 			else
 			{
-				bool lReturn = estEIDManager->changeAuthPin(PIN1, tempPIN1, ret);
+				if(!estEIDManager->changeAuthPin(PIN1, tempPIN1, ret))
+                {
+                    printf(" EstEIDManager::unblockAuthPin returned false.");
+                    if(estEIDManager) delete estEIDManager;
+                    return false;
+                }
 			}
 			printf(" Success.");
 		}
@@ -2429,7 +2969,12 @@ bool CardTests::unblockPIN2(void)
 			}
 			else
 			{
-				bool lReturn = estEIDManager->changeSignPin(PIN2, tempPIN2, ret);
+				if(!estEIDManager->changeSignPin(PIN2, tempPIN2, ret))
+                {
+                    printf(" EstEIDManager::unblockAuthPin returned false.");
+                    if(estEIDManager) delete estEIDManager;
+                    return false;
+                }
 			}
 			printf(" Success.");
 		}
@@ -2452,6 +2997,7 @@ bool CardTests::unblockPIN2(void)
 
 bool CardTests::ReadDataFromMinidriverTest(void)
 {
+#ifdef WIN32
 		for(int i = 1; i <= testIntensity; i++)
 		{
 			SCARDCONTEXT scardCtx;
@@ -2560,6 +3106,7 @@ bool CardTests::ReadDataFromMinidriverTest(void)
 				return false;
 			}
 		}
+#endif
 	return true;
 }
 
@@ -3097,7 +3644,7 @@ bool CardTests::ConnectMultiplyToOneIndexTest()
 		{
 
 			estEIDManager = new EstEIDManager();
-			unsigned int tokens = estEIDManager->getTokenCount(true);
+			estEIDManager->getTokenCount(true);
 			
 			EstEIDManager *estEidManager1 = new EstEIDManager(selectedCardReader);
 			EstEIDManager *estEidManager2 = new EstEIDManager(selectedCardReader);
@@ -3106,10 +3653,10 @@ bool CardTests::ConnectMultiplyToOneIndexTest()
 			EstEIDManager *estEidManager5 = new EstEIDManager(selectedCardReader);
 
 			printf("\r\n          1. %s 2. %s 3. %s 4. %s 5. %s", estEidManager1->readDocumentID().c_str(), 
-													estEidManager1->readDocumentID().c_str(), 
-													estEidManager1->readDocumentID().c_str(), 
-													estEidManager1->readDocumentID().c_str(), 
-													estEidManager1->readDocumentID().c_str());
+													estEidManager2->readDocumentID().c_str(),
+													estEidManager3->readDocumentID().c_str(),
+													estEidManager4->readDocumentID().c_str(),
+													estEidManager5->readDocumentID().c_str());
 
 			delete estEidManager1;
 			delete estEidManager2;
