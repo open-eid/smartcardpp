@@ -349,7 +349,16 @@ void PCSCManager::reconnect()
 void PCSCManager::reconnect(unsigned long SCARD_PROTO)
 {
 	log();
+#ifdef __APPLE__
+    DWORD currentProto = SCARD_PROTOCOL_T0;
+    SCardLog::writeLog("[%i:%i][%s:%d] SCardDisconnect", connectionID, transactionID, __FUNC__, __LINE__);
+    SCardDisconnect(this->hScard, SCARD_RESET_CARD);
+    SCardLog::writeLog("[%i:%i][%s:%d] SCardConnect to index %i", connectionID, transactionID, __FUNC__, __LINE__, cIndex);
+    SCError::check(SCardConnect(hContext, mReaderStates[cIndex].szReader, SCARD_SHARE_SHARED, SCARD_PROTO, &this->hScard, &currentProto), connectionID, transactionID);
+    proto = currentProto;
+#else
 	SCError::check(SCardReconnect(this->hScard, SCARD_SHARE_SHARED, SCARD_PROTO, SCARD_RESET_CARD, &this->proto), connectionID, transactionID);
+#endif
 }
 
 std::string PCSCManager::getATRHex()

@@ -735,7 +735,7 @@ void EstEIDManager::reconnectWithT1()
 		{
 			if(!mManager->isT1Protocol())
 			{
-				SCardLog::writeLog("[%i:%i][%s:%d] Current protocol T1. Reconnecting.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+				SCardLog::writeLog("[%i:%i][%s:%d] Current protocol T0. Reconnecting.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 				mManager->reconnect(SCARD_PROTOCOL_T1);
                 selectMF();
 				if(!mManager->isT1Protocol())
