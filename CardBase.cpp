@@ -375,15 +375,15 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
                 SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is less then two bytes: %i", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__,  realLen);
                 SW1 = 0x00;
                 SW2 = 0x00;
-                //throw CardDataError("Zero-length input from cardmanager");
 			}
-			RecvBuffer.resize(realLen);
-
-			
-
-			SCardLog::writeLog("[%i:%i][%s:%d] Executed", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
-			SW1 = RecvBuffer[realLen - 2];
-			SW2 = RecvBuffer[realLen - 1];
+            else
+            {
+                RecvBuffer.resize(realLen);
+                SCardLog::writeLog("[%i:%i][%s:%d] Executed", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
+                SW1 = RecvBuffer[realLen - 2];
+                SW2 = RecvBuffer[realLen - 1];
+            }
+            
 			if(SW1 == 0x00 && SW2 == 0x00)
 				SCardLog::writeLog("[%i:%i][%s:%d] 0x%02X 0x%02X", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__, SW1, SW2);
 			else
