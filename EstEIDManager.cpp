@@ -2001,6 +2001,7 @@ uint EstEIDManager::getTokenCount(bool forceRefresh)
 		{
 			this->_card_version = EstEIDManager::VER_INVALID;
 			this->extAPDUSupported = false;
+            return 0;
 		}
 		catch(...)
 		{
