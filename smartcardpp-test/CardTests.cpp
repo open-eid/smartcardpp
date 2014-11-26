@@ -1202,6 +1202,7 @@ bool CardTests::calcSignSHA224_HashOnly_WithSignCert(void)
 			estEIDManager->sign(hash, EstEIDManager::SHA224, EstEIDManager::SIGN);
 			estEIDManager->endTransaction();
             
+            printf("\r\n          Calculating signature for SHA224 with sign key. Hash only mode... %i,", i);
             estEIDManager2->startTransaction();
             if(estEIDManager2->isSecureConnection())
             {
@@ -1771,6 +1772,7 @@ bool CardTests::calcSignMD5_HashOnly_WithSignCert(void)
 
 			estEIDManager->sign(hash, EstEIDManager::MD5, EstEIDManager::SIGN);
             
+            printf("\r\n          Calculating MD5 with sign key. Hash only mode... %i,", i);
             if(estEIDManager2->isSecureConnection())
             {
                 printf(" PIN2 ");
