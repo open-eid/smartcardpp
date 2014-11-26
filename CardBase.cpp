@@ -350,7 +350,7 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 
 		while((SW1 == 0x00 && SW2 == 0x00) && retriesLeft > 0)
 		{
-			SCardLog::writeAPDULog(__FUNC__, __LINE__, cmd, mManager->getProtocol(), true, mManager->getConnectionID(), mManager->getTransactionId());
+			
 
 			if(retriesLeft < 10)
 			{
@@ -359,15 +359,18 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 				#ifdef WIN32
 					Sleep(500);
 				#else
-					sleep(5);
+					sleep(1);
 				#endif
 
 				SCardLog::writeLog("[%i:%i][%s:%d] Reconnecting", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
 				//mManager->reconnect();
                 
                 mManager->resetCurrentConnection();
+                SCardLog::writeLog("[%i:%i][%s:%d] Throwing CardResetError", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
+                throw CardResetError();
 			}
 			SCardLog::writeLog("[%i:%i][%s:%d] Executing", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
+            SCardLog::writeAPDULog(__FUNC__, __LINE__, cmd, mManager->getProtocol(), true, mManager->getConnectionID(), mManager->getTransactionId());
 			mManager->execCommand(cmd, RecvBuffer, realLen);
 			SCardLog::writeLog("[%i:%i][%s:%d] Recieved buffer size is: %i bytes", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__, realLen);
 			if(realLen < 2)

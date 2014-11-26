@@ -38,6 +38,8 @@
 	#include "md5.h"
 #endif
 
+#define APDU_RETRY_COUNT 10
+
 typedef std::pair<std::string, std::string> Token;
 
 /// Estonian ID card class. Supplies most of the card functions
