@@ -2422,6 +2422,7 @@ bool CardTests::cardChallengeTest(void)
 
 bool CardTests::getMD5KeyContainerName(void)
 {
+#ifdef WIN32
 	EstEIDManager *estEIDManager = NULL;
 	try
 	{
@@ -2463,6 +2464,7 @@ bool CardTests::getMD5KeyContainerName(void)
 		return false;
 	}
 	if(estEIDManager) delete estEIDManager;
+#endif
 	return true;
 }
 
@@ -2732,9 +2734,10 @@ bool CardTests::RSADecrypt(void)
 			ByteVec cryptoVector(cryptogram, cryptogram + sizeof(cryptogram) / sizeof(unsigned char));
 			cryptoVector.resize(lReturn, 0x00);
 			byte ret = 0x03;
+            estEIDManager->startTransaction();
 			estEIDManager->validateAuthPin(PIN1, ret);
 			ByteVec decryptedData = estEIDManager->RSADecrypt(cryptoVector);
-
+            estEIDManager->endTransaction();
 			printf("\r\n\r\n");
 			for(unsigned int i = 0; i < decryptedData.size(); i++)
 			{
@@ -3686,8 +3689,8 @@ bool CardTests::firefoxCardPoolingTest()
 	EstEIDManager *estEIDManager = NULL;
 	try
 	{
-		//for(int i = 1; i <= testIntensity; i++)
-		//{
+		for(int i = 1; i <= testIntensity; i++)
+		{
 			for(int y = 0; y < constructorsCount; y++)
 			{
 				estEIDManager = new EstEIDManager();
@@ -3700,7 +3703,7 @@ bool CardTests::firefoxCardPoolingTest()
 					delete m;
 				}
 			}
-		//}
+		}
 	}
 	catch(CardError &e)
 	{
