@@ -651,10 +651,10 @@ bool CardTests::readPersonalDataTest(void)
 				return false;
 			}
 
-			printf("Owner info: %s %s %s %s %s %s", firstname.c_str(), middlename.c_str(), surname.c_str(), sex.c_str(), citizen.c_str(), birthdate.c_str());
+			printf("          Owner info: %s %s %s %s %s %s", firstname.c_str(), middlename.c_str(), surname.c_str(), sex.c_str(), citizen.c_str(), birthdate.c_str());
 			printf("\r\n          Card info: %s %s %s\r\n", id .c_str(), documentid.c_str(), expiry.c_str());
             
-            printf("Owner info: %s %s %s %s %s %s", firstname2.c_str(), middlename2.c_str(), surname2.c_str(), sex2.c_str(), citizen2.c_str(), birthdate2.c_str());
+            printf("          Owner info: %s %s %s %s %s %s", firstname2.c_str(), middlename2.c_str(), surname2.c_str(), sex2.c_str(), citizen2.c_str(), birthdate2.c_str());
             printf("\r\n          Card info: %s %s %s\r\n", id2.c_str(), documentid2.c_str(), expiry2.c_str());
 		}
 	}
@@ -1344,6 +1344,7 @@ bool CardTests::calcSignSHA256_HashOnly_WithSignCert(void)
 
 			estEIDManager->sign(hash, EstEIDManager::SHA256, EstEIDManager::SIGN);
             
+            printf("\r\n          Calculating signature for SHA256 with sign key. Hash only mode... %i,", i);
             if(estEIDManager2->isSecureConnection())
             {
                 printf(" PIN2 ");
@@ -1644,6 +1645,19 @@ bool CardTests::calcSignSHA512_HashOnly_WithSignCert(void)
 
 			estEIDManager->sign(hash, EstEIDManager::SHA512, EstEIDManager::SIGN);
 			estEIDManager->endTransaction();
+            
+            printf("\r\n          Calculating signature for SHA512 with sign key. Hash only mode... %i,", i);
+            estEIDManager2->startTransaction();
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PIN2 ");
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, "");
+            }
+            else
+                estEIDManager2->enterPin(EstEIDManager::PIN_SIGN, PIN2);
+            
+            estEIDManager2->sign(hash, EstEIDManager::SHA512, EstEIDManager::SIGN);
+            estEIDManager2->endTransaction();
 			printf(" Success.");
 		}
 	}
@@ -3644,30 +3658,42 @@ bool CardTests::ConnectMultiplyToOneIndexTest()
 	EstEIDManager *estEIDManager = NULL;
 	try
 	{
-		
+        
+        printf("\n");
 		for(int i = 1; i <= testIntensity; i++)
 		{
-
+            printf("          %i\n", i);
 			estEIDManager = new EstEIDManager();
 			estEIDManager->getTokenCount(true);
 			
+            
 			EstEIDManager *estEidManager1 = new EstEIDManager(selectedCardReader);
+            printf("          1. Connected\n");
 			EstEIDManager *estEidManager2 = new EstEIDManager(selectedCardReader);
+            printf("          2. Connected\n");
 			EstEIDManager *estEidManager3 = new EstEIDManager(selectedCardReader);
+            printf("          3. Connected\n");
 			EstEIDManager *estEidManager4 = new EstEIDManager(selectedCardReader);
+            printf("          4. Connected\n");
 			EstEIDManager *estEidManager5 = new EstEIDManager(selectedCardReader);
-
-			printf("\r\n          1. %s 2. %s 3. %s 4. %s 5. %s", estEidManager1->readDocumentID().c_str(), 
-													estEidManager2->readDocumentID().c_str(),
-													estEidManager3->readDocumentID().c_str(),
-													estEidManager4->readDocumentID().c_str(),
-													estEidManager5->readDocumentID().c_str());
+            printf("          5. Connected\n");
+            
+            printf("                    %i, %s\n", i, estEidManager1->readDocumentID().c_str());
+            printf("                    %i, %s\n", i, estEidManager2->readDocumentID().c_str());
+            printf("                    %i, %s\n", i, estEidManager3->readDocumentID().c_str());
+            printf("                    %i, %s\n", i, estEidManager4->readDocumentID().c_str());
+            printf("                    %i, %s\n", i, estEidManager5->readDocumentID().c_str());
 
 			delete estEidManager1;
+            printf("          1. Disconnected\n");
 			delete estEidManager2;
+            printf("          2. Disconnected\n");
 			delete estEidManager3;
+            printf("          3. Disconnected\n");
 			delete estEidManager4;
+            printf("          4. Disconnected\n");
 			delete estEidManager5;
+            printf("          5. Disconnected\n");
 		}
 	}
 	catch(CardError &e)

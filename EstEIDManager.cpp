@@ -137,7 +137,7 @@ void EstEIDManager::connect(std::string readerName)
 void EstEIDManager::disconnect()
 {
 	mManager->endTransaction();
-	mManager->deleteConnection(false);
+	mManager->deleteConnection(true);
 }
 
 EstEIDManager::~EstEIDManager()
@@ -2188,7 +2188,7 @@ std::vector<Token> EstEIDManager::getTokenList()
 			checkProtocol();
 			tokens.push_back(make_pair(readers[i], this->readRecord_internal(DOCUMENTID)));
 			mManager->endTransaction();
-			mManager->deleteConnection(false);
+			mManager->deleteConnection(true);
 		}
 		catch(NoCardInReaderError &e)
 		{
