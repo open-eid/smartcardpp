@@ -2069,9 +2069,11 @@ bool CardTests::validateSignPIN(void)
 bool CardTests::validatePUK(void)
 {
 	EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
 	try
 	{
 		estEIDManager = new EstEIDManager(selectedCardReader);
+        estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
 		byte ret = 0x03;
 
 		for(int i = 1; i <= testIntensity; i++)
@@ -2087,6 +2089,18 @@ bool CardTests::validatePUK(void)
 				estEIDManager->validatePuk(PUK, ret);
 			}
 			printf(" Success.");
+            
+            printf("\r\n          Validating PUK... %i,", i);
+            if(estEIDManager2->isSecureConnection())
+            {
+                printf(" PUK ");
+                estEIDManager2->validatePuk(PUK, ret);
+            }
+            else
+            {
+                estEIDManager2->validatePuk(PUK, ret);
+            }
+            printf(" Success.");
 		}
 		return true;
 	}
@@ -2094,18 +2108,21 @@ bool CardTests::validatePUK(void)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(CardError &e)
 	{
 		printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	catch(runtime_error &r)
 	{
 		printf("%s ", r.what());
 		if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
 		return false;
 	}
 	return false;
