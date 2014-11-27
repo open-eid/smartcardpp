@@ -2550,7 +2550,7 @@ void EstEIDManager::checkPinPadDetection()
 
 void EstEIDManager::checkExtendedAPDUSupport()
 {
-    if (getenv("SMARTCARDPP_NOEXTAPDU") == NULL)
+    if (getenv("SMARTCARDPP_EXTAPDU") == NULL)
     {
         SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU support turned off", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
         noExtAPDU = true;
