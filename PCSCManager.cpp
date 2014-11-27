@@ -35,7 +35,6 @@ PCSCManager::PCSCManager()
 
 PCSCManager::PCSCManager(std::string readerName)
 {
-	setConnectionID();
 	log();
 	this->mOwnContext = true;
 	this->transactionID = 0;
@@ -906,6 +905,7 @@ void PCSCManager::resetCurrentContext()
 void PCSCManager::resetCurrentConnection()
 {
     log();
+    deleteConnection(true);
     if (mOwnContext)
     {
         SCardLog::writeLog("[%i:%i][%s:%d] SCardReleaseContext", connectionID, transactionID, __FUNC__, __LINE__);
@@ -915,6 +915,5 @@ void PCSCManager::resetCurrentConnection()
         SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
     }
     
-    deleteConnection(true);
-    makeConnection(this->cIndex);
+    connect(this->cIndex);
 }
