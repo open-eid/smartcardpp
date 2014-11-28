@@ -873,8 +873,9 @@ string EstEIDManager::readDocumentID()
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Reading document id iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             string ret = "";
-            mManager->beginTransaction();
             checkProtocol();
+            mManager->beginTransaction();
+            
             
             ret = this->readRecord_internal(DOCUMENTID);
             mManager->endTransaction();
@@ -885,6 +886,7 @@ string EstEIDManager::readDocumentID()
             SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
             continue;
         }
+        
     }
 	
     SCardLog::writeLog("[%i:%i][%s:%d] APDU retry limit reached. Throwing CardResetError.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
