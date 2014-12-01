@@ -359,7 +359,7 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 				#ifdef WIN32
 					Sleep(500);
 				#else
-					sleep(1);
+					sleep(5);
 				#endif
 
 				SCardLog::writeLog("[%i:%i][%s:%d] Reconnecting", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
@@ -438,7 +438,7 @@ ByteVec CardBase::execute(ByteVec cmd, int apducase)
 
 				retriesCount++;
 			}
-			SCardLog::writeLog("[%i:%i][%s:%d] Going to next iteraction", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
+			SCardLog::writeLog("[%i:%i][%s:%d] Will try again", mManager->getConnectionID(), mManager->getTransactionId(), __FUNC__, __LINE__);
 			retriesLeft--;
 		}
 		if(retriesLeft <= 0)

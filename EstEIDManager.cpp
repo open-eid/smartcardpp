@@ -781,6 +781,7 @@ void EstEIDManager::checkProtocol()
 		{
 			SCardLog::writeLog("[%i:%i][%s:%d] Digi-ID spetsific condition. Reconnect...", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 			mManager->reconnect();
+            mManager->beginTransaction();
 			return;
 		}
 		if (ce.SW1 != 0x6A || ce.SW2 != 0x87 )
@@ -788,6 +789,7 @@ void EstEIDManager::checkProtocol()
 			throw;
 		}
 		this->reconnectWithT0();
+        mManager->beginTransaction();
 	}
 	catch(SCError &sce)
 	{
@@ -796,6 +798,7 @@ void EstEIDManager::checkProtocol()
 			throw;
 		}
 		this->reconnectWithT0();
+        mManager->beginTransaction();
 	}
 
 	if(this->_card_version >= VER_3_5 && !mManager->isT1Protocol() && mManager->isOwnConnection() && this->extAPDUSupported)
@@ -804,12 +807,14 @@ void EstEIDManager::checkProtocol()
 		try
 		{
 			this->reconnectWithT1();
+            mManager->beginTransaction();
 			SCardLog::writeLog("[%i:%i][%s:%d] Current protocol is T1.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 		}
 		catch(...)
 		{
 			SCardLog::writeLog("[%i:%i][%s:%d] Failed to reconnect with protocol T1. Restoring connection", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 			mManager->reconnect();
+            mManager->beginTransaction();
 		}
 	}
 	
@@ -852,7 +857,7 @@ string EstEIDManager::readCardID()
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -873,9 +878,9 @@ string EstEIDManager::readDocumentID()
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Reading document id iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             string ret = "";
-            checkProtocol();
+
             mManager->beginTransaction();
-            
+            //checkProtocol();
             
             ret = this->readRecord_internal(DOCUMENTID);
             mManager->endTransaction();
@@ -883,7 +888,7 @@ string EstEIDManager::readDocumentID()
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
         
@@ -941,7 +946,7 @@ string EstEIDManager::readCardName(bool firstNameFirst)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading card name iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             string tmp = "";
             string ret = "";
             string firstName = "";
@@ -975,7 +980,7 @@ string EstEIDManager::readCardName(bool firstNameFirst)
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1022,16 +1027,16 @@ bool EstEIDManager::readPersonalData(std::vector<std::string>& data, int firstRe
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
-            checkProtocol();
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading personal data iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
+            checkProtocol();
             readPersonalData_internal(data,firstRecord,lastRecord);
             mManager->endTransaction();
             return true;
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
         catch(CardError &e)
@@ -1063,7 +1068,7 @@ bool EstEIDManager::getKeyUsageCounters(dword &authKey,dword &signKey)
     {
         try
         {
-            
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading usage counters iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             cBase->selectMF(true);
             cBase->selectDF(FILEID_APP,true);
@@ -1097,7 +1102,7 @@ bool EstEIDManager::getKeyUsageCounters(dword &authKey,dword &signKey)
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
 
@@ -1142,48 +1147,54 @@ ByteVec EstEIDManager::getAuthCert()
 	  throw PCSCManagerFailure();
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
-
-	if(this->authCert.empty())
-	{
-		while(this->authCert.empty())
-		{
-			try
-			{
-				mManager->beginTransaction();
-				cBase->selectMF(true);
-				cBase->selectDF(FILEID_APP,true);
-				fileInfo = cBase->selectEF(0xAACE);
-				tmp = readEFAndTruncate(fileInfo.fileLength );
-				mManager->endTransaction();
-				this->authCert = tmp;
-			}
-			catch(CardResetError &e)
-			{
-				SCardLog::writeLog("[%i:%i][%s:%d] %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what());
-				mManager->endTransaction();
-				this->authCert.clear();
+    
+    for(int i = 0; i < APDU_RETRY_COUNT; i++)
+    {
+        try
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading auth cert iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            if(this->authCert.empty())
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] Certificate is empty. Reading from card.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+                mManager->beginTransaction();
+                cBase->selectMF(true);
+                cBase->selectDF(FILEID_APP,true);
+                fileInfo = cBase->selectEF(0xAACE);
+                tmp = readEFAndTruncate(fileInfo.fileLength );
+                mManager->endTransaction();
+                this->authCert = tmp;
+                return this->authCert;
+            }
+            else
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] Found buffered certificate.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+                return this->authCert;
+            }
+        }
+        catch (CardResetError e)
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            this->authCert.clear();
+            tmp.clear();
+            continue;
+        }
+        catch(CardError &e)
+        {
+            if(e.SW1 == 0x69 && e.SW2 == 0x85)		//If Invalid condition try again once
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] Card error. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+                this->signCert.clear();
                 tmp.clear();
-				//this->sleep(1);
-				//mManager->reconnect();
-				continue;
-			}
-			catch(CardError &e)
-			{
-				SCardLog::writeLog("[%i:%i][%s:%d] %s 0x%02X 0x%02X", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what(), e.SW1, e.SW2);
-				mManager->endTransaction();
-				if(e.SW1 == 0x69 && e.SW2 == 0x85)		//If Invalid condition try again once
-				{
-					this->authCert.clear();
-					continue;
-				}
-				throw e;
-			}
-			
-			
-		}
-	}
-
-	return this->authCert;
+                continue;
+            }
+        }
+    }
+    
+    SCardLog::writeLog("[%i:%i][%s:%d] APDU retry limit reached. Throwing CardResetError.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+    this->authCert.clear();
+    tmp.clear();
+    throw CardResetError();
+	
 }
 
 ByteVec EstEIDManager::getSignCert()
@@ -1193,46 +1204,52 @@ ByteVec EstEIDManager::getSignCert()
 	  throw PCSCManagerFailure();
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
-
-	if(this->signCert.empty())
-	{
-		while(this->signCert.empty())
-		{
-			try
-			{
-				mManager->beginTransaction();
-				cBase->selectMF(true);
-				cBase->selectDF(FILEID_APP,true);
-				fileInfo = cBase->selectEF(0xDDCE);
-				tmp = readEFAndTruncate(fileInfo.fileLength );
-				mManager->endTransaction();
-				this->signCert = tmp;
-			}
-			catch(CardResetError &e)
-			{
-				SCardLog::writeLog("[%i:%i][%s:%d] %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what());
-				mManager->endTransaction();
-				this->signCert.clear();
+    
+    for(int i = 0; i < APDU_RETRY_COUNT; i++)
+    {
+        try
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading auth cert iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            if(this->signCert.empty())
+            {
+                mManager->beginTransaction();
+                cBase->selectMF(true);
+                cBase->selectDF(FILEID_APP,true);
+                fileInfo = cBase->selectEF(0xDDCE);
+                tmp = readEFAndTruncate(fileInfo.fileLength );
+                mManager->endTransaction();
+                this->signCert = tmp;
+                return this->signCert;
+            }
+            else
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] Found buffered certificate.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+                return this->signCert;
+            }
+        }
+        catch (CardResetError e)
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            this->signCert.clear();
+            tmp.clear();
+            continue;
+        }
+        catch(CardError &e)
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] Card error. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            if(e.SW1 == 0x69 && e.SW2 == 0x85)		//If Invalid condition try again once
+            {
+                this->signCert.clear();
                 tmp.clear();
-				//this->sleep(1);
-				//mManager->reconnect();
-				continue;
-			}
-			catch(CardError &e)
-			{
-				SCardLog::writeLog("[%i:%i][%s:%d] %s 0x%02X 0x%02X", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what(), e.SW1, e.SW2);
-				mManager->endTransaction();
-				if(e.SW1 == 0x69 && e.SW2 == 0x85)		//If Invalid condition try again once
-				{
-					this->signCert.clear();
-					continue;
-				}
-				throw e;
-			}
-		}
-	}
-	
-	return this->signCert;
+                continue;
+            }
+        }
+    }
+    
+    SCardLog::writeLog("[%i:%i][%s:%d] APDU retry limit reached. Throwing CardResetError.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+    this->signCert.clear();
+    tmp.clear();
+    throw CardResetError();
 }
 
 ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId)
@@ -1256,7 +1273,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId)
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1294,7 +1311,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId, co
         }
         catch(CardResetError &e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
         catch(AuthError &e)
@@ -1325,8 +1342,8 @@ ByteVec EstEIDManager::RSADecrypt(const ByteVec &cryptogram)
 	if(mManager == NULL)
 	  throw PCSCManagerFailure();
     
-	checkProtocol();
 	mManager->beginTransaction();
+    checkProtocol();
 	ByteVec tmp = RSADecrypt_internal(cryptogram);
 	mManager->endTransaction(false);
 	return tmp;
@@ -1343,9 +1360,9 @@ ByteVec EstEIDManager::RSADecrypt(const ByteVec &cipher,const PinString &pin)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
-            checkProtocol();
+            SCardLog::writeLog("[%i:%i][%s:%d] Decrypting iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
+            checkProtocol();
             cBase->selectMF(true);
             cBase->selectDF(FILEID_APP,true);
             enterPin(PIN_AUTH,pin);
@@ -1355,7 +1372,7 @@ ByteVec EstEIDManager::RSADecrypt(const ByteVec &cipher,const PinString &pin)
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1374,7 +1391,7 @@ bool EstEIDManager::validateAuthPin(const PinString &pin, byte &retriesLeft )
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Verifying Auth PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             bool tmp = validatePin_internal(PIN_AUTH,pin,retriesLeft);
             mManager->endTransaction(false);
@@ -1382,7 +1399,7 @@ bool EstEIDManager::validateAuthPin(const PinString &pin, byte &retriesLeft )
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1401,7 +1418,7 @@ bool EstEIDManager::validateSignPin(const PinString &pin, byte &retriesLeft )
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Verifying Sign PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             bool tmp = validatePin_internal(PIN_SIGN,pin,retriesLeft);
             mManager->endTransaction(false);
@@ -1409,7 +1426,7 @@ bool EstEIDManager::validateSignPin(const PinString &pin, byte &retriesLeft )
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1428,7 +1445,7 @@ bool EstEIDManager::validatePuk(const PinString &pin, byte &retriesLeft )
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Verifying PUK iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             bool tmp = validatePin_internal(PUK,pin,retriesLeft);
             mManager->endTransaction(false);
@@ -1436,7 +1453,7 @@ bool EstEIDManager::validatePuk(const PinString &pin, byte &retriesLeft )
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1455,7 +1472,7 @@ bool EstEIDManager::changeAuthPin(const PinString &newPin,const PinString &oldPi
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Changing Auth PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             if (!mManager->isPinPad())
             {
@@ -1486,7 +1503,7 @@ bool EstEIDManager::changeAuthPin(const PinString &newPin,const PinString &oldPi
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1506,7 +1523,7 @@ bool EstEIDManager::changeSignPin(const PinString &newPin,const PinString &oldPi
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Changing Sign PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             if (!mManager->isPinPad())
             {
@@ -1537,7 +1554,7 @@ bool EstEIDManager::changeSignPin(const PinString &newPin,const PinString &oldPi
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1557,7 +1574,7 @@ bool EstEIDManager::changePUK(const PinString &newPUK,const PinString &oldPUK, b
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Changing PUK iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             if (!mManager->isPinPad())
             {
@@ -1588,7 +1605,7 @@ bool EstEIDManager::changePUK(const PinString &newPUK,const PinString &oldPUK, b
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1608,7 +1625,7 @@ bool EstEIDManager::unblockAuthPin(const PinString &newPin,const PinString &mPUK
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Unblocking Auth PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             bool tmp = false;
             mManager->beginTransaction();
             if (!mManager->isPinPad())
@@ -1631,7 +1648,7 @@ bool EstEIDManager::unblockAuthPin(const PinString &newPin,const PinString &mPUK
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1650,7 +1667,7 @@ bool EstEIDManager::unblockSignPin(const PinString &newPin,const PinString &mPUK
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Unblocking Sign PIN iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             bool tmp = false;
             mManager->beginTransaction();
             if (!mManager->isPinPad())
@@ -1671,7 +1688,7 @@ bool EstEIDManager::unblockSignPin(const PinString &newPin,const PinString &mPUK
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -1690,7 +1707,7 @@ bool EstEIDManager::getRetryCounts(byte &puk,byte &pinAuth,byte &pinSign)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Reading retry counters iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->beginTransaction();
             bool tmp = this->getRetryCounts_internal(puk,pinAuth,pinSign);
             mManager->endTransaction(false);
@@ -1698,7 +1715,7 @@ bool EstEIDManager::getRetryCounts(byte &puk,byte &pinAuth,byte &pinSign)
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -2345,12 +2362,12 @@ CardBase::FCI EstEIDManager::selectMF(bool ignoreFCI)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Selecting MF iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             return cBase->selectMF(ignoreFCI);
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -2369,12 +2386,12 @@ int EstEIDManager::selectDF(int fileID,bool ignoreFCI)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Selecting DF iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             return cBase->selectDF(fileID, ignoreFCI);
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }
@@ -2394,12 +2411,12 @@ CardBase::FCI EstEIDManager::selectEF(int fileID,bool ignoreFCI)
     {
         try
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            SCardLog::writeLog("[%i:%i][%s:%d] Selecting EF iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             return cBase->selectEF(fileID, ignoreFCI);
         }
         catch (CardResetError e)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] CardResetError", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             continue;
         }
     }

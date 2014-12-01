@@ -916,4 +916,5 @@ void PCSCManager::resetCurrentConnection()
     }
     
     connect(this->cIndex);
+    beginTransaction();
 }
