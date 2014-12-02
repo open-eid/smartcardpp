@@ -29,7 +29,7 @@ PCSCManager::PCSCManager()
 	construct();
 	
 	SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
-	SCardLog::writeLog("[%i:%i][%s:%d] ", connectionID, transactionID, __FUNC__, __LINE__);
+	SCardLog::writeLog("[%i:%i][%s:%d] SCardEstablishContext", connectionID, transactionID, __FUNC__, __LINE__);
 	ensureReaders();
 }
 
