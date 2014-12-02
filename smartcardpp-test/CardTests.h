@@ -54,7 +54,9 @@ public:
 	bool readPersonalDataTest(void);
 	bool getKeyUsageCountersTest(void);
 	bool getAuthCertTest(void);
+    bool getAuthCert_With_Context_Reset_Test(void);
 	bool getSignCertTest(void);
+    bool getSignCert_With_Context_Reset_Test(void);
 	bool calcSSL_HashOnly_WithAuthCert(void);
 	bool calcSSL_HashOnly_WithSignCert(void);
 	bool calcSSL_WithPIN_WithAuthCert(void);

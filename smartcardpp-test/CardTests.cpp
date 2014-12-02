@@ -776,6 +776,68 @@ bool CardTests::getAuthCertTest(void)
 	return true;
 }
 
+bool CardTests::getAuthCert_With_Context_Reset_Test(void)
+{
+    EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    try
+    {
+        
+        for(int i = 1; i <= testIntensity; i++)
+        {
+            estEIDManager = new EstEIDManager(selectedCardReader);
+            estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+            printf("\r\n          %i,", i);
+            ByteVec cert = estEIDManager->getAuthCert();
+            
+            if(cert.size() < 1000)
+            {
+                printf(" FAILED. Authentication certificate is too short: %li bytes", cert.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Authentication certificate size: %li bytes", cert.size());
+            }
+            
+            printf("\r\n          %i,", i);
+            ByteVec cert2 = estEIDManager2->getAuthCert();
+            
+            if(cert2.size() < 1000)
+            {
+                printf(" FAILED. Authentication certificate is too short: %li bytes", cert2.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Authentication certificate size: %li bytes", cert2.size());
+            }
+            if(estEIDManager) delete estEIDManager;
+            if(estEIDManager2) delete estEIDManager2;
+        }
+    }
+    catch(CardError &e)
+    {
+        printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
+        return false;
+    }
+    catch(runtime_error &r)
+    {
+        printf("%s ", r.what());
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
+        return false;
+    }
+    
+    return true;
+}
+
 bool CardTests::getSignCertTest(void)
 {
 	EstEIDManager *estEIDManager = NULL;
@@ -832,6 +894,66 @@ bool CardTests::getSignCertTest(void)
 	if(estEIDManager) delete estEIDManager;
     if(estEIDManager2) delete estEIDManager2;
 	return true;
+}
+
+bool CardTests::getSignCert_With_Context_Reset_Test(void)
+{
+    EstEIDManager *estEIDManager = NULL;
+    EstEIDManager *estEIDManager2 = NULL;
+    try
+    {
+        
+        for(int i = 1; i <= testIntensity; i++)
+        {
+            estEIDManager = new EstEIDManager(selectedCardReader);
+            estEIDManager2 = new EstEIDManager(selectedSecondCardReader);
+            printf("\r\n          %i,", i);
+            ByteVec cert = estEIDManager->getSignCert();
+            if(cert.size() < 1000)
+            {
+                printf(" FAILED. Signature certificate is too short: %li bytes", cert.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Signature certificate size: %li bytes", cert.size());
+            }
+            
+            printf("\r\n          %i,", i);
+            ByteVec cert2 = estEIDManager2->getSignCert();
+            if(cert2.size() < 1000)
+            {
+                printf(" FAILED. Signature certificate is too short: %li bytes", cert2.size());
+                if(estEIDManager) delete estEIDManager;
+                if(estEIDManager2) delete estEIDManager2;
+                return false;
+            }
+            else
+            {
+                printf(" Success. Signature certificate size: %li bytes", cert2.size());
+            }
+            if(estEIDManager) delete estEIDManager;
+            if(estEIDManager2) delete estEIDManager2;
+        }
+    }
+    catch(CardError &e)
+    {
+        printf("%s SW1: 0x%X SW2: 0x%X ", e.what(), e.SW1, e.SW2);
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
+        return false;
+    }
+    catch(runtime_error &r)
+    {
+        printf("%s ", r.what());
+        if(estEIDManager) delete estEIDManager;
+        if(estEIDManager2) delete estEIDManager2;
+        return false;
+    }
+    
+    return true;
 }
 
 bool CardTests::calcSSL_HashOnly_WithAuthCert(void)

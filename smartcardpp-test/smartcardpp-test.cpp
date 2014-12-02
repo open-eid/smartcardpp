@@ -242,6 +242,29 @@ int main()
 	cardTests->gettimeofday(&endTim, NULL);
 	cardTests->timeval_diff(&diff, &endTim, &startTim);
 	printf("          Test took %li.%li seconds\n", diff.tv_sec, (long)diff.tv_usec);
+    
+    //Run getAuthCert_With_Context_Reset_Test
+    
+    printf("9.1. Running test: getAuthCert_With_Context_Reset_Test ");
+    cardTests->gettimeofday(&startTim, NULL);
+    totalTests++;
+    bool getAuthCert_With_Context_Reset_TestResult = cardTests->getAuthCert_With_Context_Reset_Test();
+    if(getAuthCert_With_Context_Reset_TestResult == true)
+    {
+        if(overalTestResult != false)
+            overalTestResult = true;
+        okTests++;
+        printf("   OK\n");
+    }
+    else
+    {
+        overalTestResult = false;
+        failedTests++;
+        printf("   FAILED\n");
+    }
+    cardTests->gettimeofday(&endTim, NULL);
+    cardTests->timeval_diff(&diff, &endTim, &startTim);
+    printf("          Test took %li.%li seconds\n", diff.tv_sec, (long)diff.tv_usec);
 
 	//Run getSignCertTest
 
@@ -265,6 +288,29 @@ int main()
 	cardTests->gettimeofday(&endTim, NULL);
 	cardTests->timeval_diff(&diff, &endTim, &startTim);
 	printf("          Test took %li.%li seconds\n", diff.tv_sec, (long)diff.tv_usec);
+    
+    //Run getSignCert_With_Context_Reset_Test
+    
+    printf("10.1. Running test: getSignCert_With_Context_Reset_Test ");
+    cardTests->gettimeofday(&startTim, NULL);
+    totalTests++;
+    bool getSignCert_With_Context_Reset_TestResult = cardTests->getSignCert_With_Context_Reset_Test();
+    if(getSignCert_With_Context_Reset_TestResult == true)
+    {
+        if(overalTestResult != false)
+            overalTestResult = true;
+        okTests++;
+        printf("   OK\n");
+    }
+    else
+    {
+        overalTestResult = false;
+        failedTests++;
+        printf("   FAILED\n");
+    }
+    cardTests->gettimeofday(&endTim, NULL);
+    cardTests->timeval_diff(&diff, &endTim, &startTim);
+    printf("          Test took %li.%li seconds\n", diff.tv_sec, (long)diff.tv_usec);
 
 	printf("11. Running test: calcSSL_HashOnly_WithAuthCert ");
 	cardTests->gettimeofday(&startTim, NULL);
