@@ -48,7 +48,7 @@ void SCError::check(long err, int cid, int tid)
     if((int)err == SCARD_W_RESET_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_RESET_CARD", cid, tid, __FUNC__, __LINE__, err);
-        return;
+        throw CardResetError();
     }
     else if((int)err == SCARD_E_NOT_TRANSACTED)
     {
