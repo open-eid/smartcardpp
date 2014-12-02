@@ -858,6 +858,7 @@ string EstEIDManager::readCardID()
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -889,6 +890,7 @@ string EstEIDManager::readDocumentID()
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
         
@@ -981,6 +983,7 @@ string EstEIDManager::readCardName(bool firstNameFirst)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1037,6 +1040,7 @@ bool EstEIDManager::readPersonalData(std::vector<std::string>& data, int firstRe
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
         catch(CardError &e)
@@ -1103,6 +1107,7 @@ bool EstEIDManager::getKeyUsageCounters(dword &authKey,dword &signKey)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
 
@@ -1144,7 +1149,11 @@ ByteVec EstEIDManager::getAuthCert()
 {
 	log();
 	if(mManager == NULL)
-	  throw PCSCManagerFailure();
+    {
+        
+        SCardLog::writeLog("[%i:%i][%s:%d] mManager is NULL. Throwing an exception", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+        throw PCSCManagerFailure();
+    }
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
     
@@ -1176,6 +1185,7 @@ ByteVec EstEIDManager::getAuthCert()
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             this->authCert.clear();
             tmp.clear();
+            mManager->resetCurrentConnection();
             continue;
         }
         catch(CardError &e)
@@ -1185,6 +1195,7 @@ ByteVec EstEIDManager::getAuthCert()
                 SCardLog::writeLog("[%i:%i][%s:%d] Card error. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
                 this->signCert.clear();
                 tmp.clear();
+                mManager->resetCurrentConnection();
                 continue;
             }
         }
@@ -1201,7 +1212,10 @@ ByteVec EstEIDManager::getSignCert()
 {
 	log();
 	if(mManager == NULL)
-	  throw PCSCManagerFailure();
+    {
+        SCardLog::writeLog("[%i:%i][%s:%d] mManager is NULL. Throwing an exception", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+        throw PCSCManagerFailure();
+    }
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
     
@@ -1232,6 +1246,7 @@ ByteVec EstEIDManager::getSignCert()
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             this->signCert.clear();
             tmp.clear();
+            mManager->resetCurrentConnection();
             continue;
         }
         catch(CardError &e)
@@ -1241,6 +1256,7 @@ ByteVec EstEIDManager::getSignCert()
             {
                 this->signCert.clear();
                 tmp.clear();
+                mManager->resetCurrentConnection();
                 continue;
             }
         }
@@ -1274,6 +1290,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1312,6 +1329,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId, co
         catch(CardResetError &e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
         catch(AuthError &e)
@@ -1373,6 +1391,7 @@ ByteVec EstEIDManager::RSADecrypt(const ByteVec &cipher,const PinString &pin)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1400,6 +1419,7 @@ bool EstEIDManager::validateAuthPin(const PinString &pin, byte &retriesLeft )
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1427,6 +1447,7 @@ bool EstEIDManager::validateSignPin(const PinString &pin, byte &retriesLeft )
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1454,6 +1475,7 @@ bool EstEIDManager::validatePuk(const PinString &pin, byte &retriesLeft )
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1504,6 +1526,7 @@ bool EstEIDManager::changeAuthPin(const PinString &newPin,const PinString &oldPi
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1555,6 +1578,7 @@ bool EstEIDManager::changeSignPin(const PinString &newPin,const PinString &oldPi
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1606,6 +1630,7 @@ bool EstEIDManager::changePUK(const PinString &newPUK,const PinString &oldPUK, b
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1649,6 +1674,7 @@ bool EstEIDManager::unblockAuthPin(const PinString &newPin,const PinString &mPUK
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1689,6 +1715,7 @@ bool EstEIDManager::unblockSignPin(const PinString &newPin,const PinString &mPUK
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -1716,6 +1743,7 @@ bool EstEIDManager::getRetryCounts(byte &puk,byte &pinAuth,byte &pinSign)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -2368,6 +2396,7 @@ CardBase::FCI EstEIDManager::selectMF(bool ignoreFCI)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -2392,6 +2421,7 @@ int EstEIDManager::selectDF(int fileID,bool ignoreFCI)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
@@ -2417,6 +2447,7 @@ CardBase::FCI EstEIDManager::selectEF(int fileID,bool ignoreFCI)
         catch (CardResetError e)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            mManager->resetCurrentConnection();
             continue;
         }
     }
