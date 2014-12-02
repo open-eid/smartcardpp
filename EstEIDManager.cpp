@@ -2488,14 +2488,26 @@ std::vector<Token> EstEIDManager::getTokenList()
 		
 		try
 		{
-			SCardLog::writeLog("[%i:%i][%s:%d] Connecting to reader: %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readers[i].c_str());
+            for(int y = 0; y < APDU_RETRY_COUNT; y++)
+            {
+                try
+                {
+                    SCardLog::writeLog("[%i:%i][%s:%d] Connecting to reader: %s iteraction %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readers[i].c_str(), y);
+                    
+                    mManager->makeConnection((readers[i]));
+                    mManager->beginTransaction();
+                    checkProtocol();
+                    tokens.push_back(make_pair(readers[i], this->readRecord_internal(DOCUMENTID)));
+                    mManager->endTransaction();
+                    mManager->deleteConnection(true);
+                }
+                catch (CardResetError e)
+                {
+                    SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, y);
+                    continue;
+                }
+            }
 			
-			mManager->makeConnection((readers[i]));
-			mManager->beginTransaction();
-			checkProtocol();
-			tokens.push_back(make_pair(readers[i], this->readRecord_internal(DOCUMENTID)));
-			mManager->endTransaction();
-			mManager->deleteConnection(true);
 		}
 		catch(NoCardInReaderError &e)
 		{
