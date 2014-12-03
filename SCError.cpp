@@ -68,7 +68,7 @@ void SCError::check(long err, int cid, int tid)
     else if((int)err == SCARD_W_UNRESPONSIVE_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_UNRESPONSIVE_CARD", cid, tid, __FUNC__, __LINE__, err);
-        throw NoCardInReaderError();
+        throw CardResetError();
     }
     else if((int)err == SCARD_E_NO_READERS_AVAILABLE)
     {
