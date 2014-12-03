@@ -2499,7 +2499,7 @@ std::vector<Token> EstEIDManager::getTokenList()
                     checkProtocol();
                     tokens.push_back(make_pair(readers[i], this->readRecord_internal(DOCUMENTID)));
                     mManager->endTransaction();
-                    mManager->deleteConnection(true);
+                    mManager->deleteConnection(false);
                 }
                 catch (CardResetError e)
                 {

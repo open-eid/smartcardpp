@@ -905,16 +905,110 @@ void PCSCManager::resetCurrentContext()
 void PCSCManager::resetCurrentConnection()
 {
     log();
-    deleteConnection(true);
-    if (mOwnContext)
+#ifdef __APPLE__
+    
+    osxver foundver;
+    char *osverstr = NULL;
+    osverstr = osversionString();
+    macosx_ver(osverstr, &foundver);
+    
+    SCardLog::writeLog("[%i:%i][%s:%d] Running on MacOS 10.%d,%d\n", connectionID, transactionID, __FUNC__, __LINE__, foundver.minor, foundver.sub);
+    if(foundver.minor > 9)
     {
-        SCardLog::writeLog("[%i:%i][%s:%d] SCardReleaseContext", connectionID, transactionID, __FUNC__, __LINE__);
-        SCardReleaseContext(this->hContext);
+        deleteConnection(true);
+        if (mOwnContext)
+        {
+            SCardLog::writeLog("[%i:%i][%s:%d] SCardReleaseContext", connectionID, transactionID, __FUNC__, __LINE__);
+            SCardReleaseContext(this->hContext);
+            
+            SCardLog::writeLog("[%i:%i][%s:%d] SCardEstablishContext", connectionID, transactionID, __FUNC__, __LINE__);
+            SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
+        }
         
-        SCardLog::writeLog("[%i:%i][%s:%d] SCardEstablishContext", connectionID, transactionID, __FUNC__, __LINE__);
-        SCError::check(SCardEstablishContext(SCARD_SCOPE_USER, NULL, NULL, &hContext), connectionID, transactionID);
+        connect(this->cIndex);
+        beginTransaction();
+    }
+    else
+    {
+        reconnect();
     }
     
-    connect(this->cIndex);
-    beginTransaction();
+#else
+    reconnect();
+#endif
 }
+
+#ifdef __APPLE__
+char *PCSCManager::osversionString(void)
+{
+    int mib[2];
+    size_t len;
+    char *kernelVersion=NULL;
+    mib[0] = CTL_KERN;
+    mib[1] = KERN_OSRELEASE;
+    
+    if (sysctl(mib, 2, NULL, &len, NULL, 0) < 0 ) {
+        fprintf(stderr,"%s: Error during sysctl probe call!\n",__PRETTY_FUNCTION__ );
+        fflush(stdout);
+        exit(4) ;
+    }
+    
+    kernelVersion = (char *)malloc(len );
+    if (kernelVersion == NULL ) {
+        fprintf(stderr,"%s: Error during malloc!\n",__PRETTY_FUNCTION__ );
+        fflush(stdout);
+        exit(4) ;
+    }
+    if (sysctl(mib, 2, kernelVersion, &len, NULL, 0) < 0 ) {
+        fprintf(stderr,"%s: Error during sysctl get verstring call!\n",__PRETTY_FUNCTION__ );
+        fflush(stdout);
+        exit(4) ;
+    }
+    
+    return kernelVersion ;
+}
+
+void PCSCManager::macosx_ver(char *darwinversion, osxver *osxversion )
+{
+    /*
+     From the book Mac Os X and IOS Internals:
+     In version 10.1.1, Darwin (the core OS) was renumbered from v1.4.1 to 5.1,
+     and since then has followed the OS X numbers consistently by being four
+     numbers ahead of the minor version, and aligning its own minor with the
+     sub-version.
+     */
+    char firstelm[2]= {0,0},secElm[2]={0,0};
+    
+    if (strlen(darwinversion) < 5 ) {
+        fprintf(stderr,"%s: %s Can't possibly be a version string. Exiting\n",__PRETTY_FUNCTION__,darwinversion);
+        fflush(stdout);
+        exit(2);
+    }
+    char *s=darwinversion,*t=firstelm,*curdot=strchr(darwinversion,'.' );
+    
+    while ( s != curdot )
+        *t++ = *s++;
+    t=secElm ;
+    curdot=strchr(++s,'.' );
+    while ( s != curdot )
+        *t++ = *s++;
+    int maj=0, min=0;
+    maj= (int)strtol(firstelm, (char **)NULL, 10);
+    if ( maj == 0 && errno == EINVAL ) {
+        fprintf(stderr,"%s Error during conversion of version string\n",__PRETTY_FUNCTION__);
+        fflush(stdout);
+        exit(4);
+    }
+    
+    min=(int)strtol(secElm, (char **)NULL, 10);
+    
+    if ( min  == 0 && errno == EINVAL ) {
+        fprintf(stderr,"%s: Error during conversion of version string\n",__PRETTY_FUNCTION__);
+        fflush(stdout);
+        exit(4);
+    }
+    osxversion->minor=maj-4;
+    osxversion->sub=min;
+}
+
+#endif

@@ -94,6 +94,12 @@ private:
 	  int  tz_minuteswest; /* minutes W of Greenwich */
 	  int  tz_dsttime;     /* type of dst correction */
 	};
+    
+    struct osver {
+        int minor;
+        int sub;
+    } ;
+    typedef struct osver osxver;
 
 	void construct(void);
 	void ensureReaders();
@@ -116,6 +122,9 @@ private:
 	
 #ifdef WIN32
 	int gettimeofday(struct timeval *tv, struct timezone *tz);
+#elif __APPLE__
+    void macosx_ver(char *darwinversion, osxver *osxversion ) ;
+    char *osversionString(void);
 #endif
 
 public:
