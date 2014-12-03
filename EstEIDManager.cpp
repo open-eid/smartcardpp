@@ -2504,6 +2504,8 @@ std::vector<Token> EstEIDManager::getTokenList()
                 catch (CardResetError e)
                 {
                     SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, y);
+                    mManager->endTransaction();
+                    mManager->deleteConnection(false);
                     continue;
                 }
             }
@@ -2513,6 +2515,8 @@ std::vector<Token> EstEIDManager::getTokenList()
 		{
 			SCardLog::writeLog("[%i:%i][%s:%d] %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what());
 			tokens.push_back(make_pair(readers[i], ""));
+            mManager->endTransaction();
+            mManager->deleteConnection(false);
 			continue;
 		}
 		catch(SCError &e)
