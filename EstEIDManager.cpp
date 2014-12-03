@@ -2500,6 +2500,7 @@ std::vector<Token> EstEIDManager::getTokenList()
                     tokens.push_back(make_pair(readers[i], this->readRecord_internal(DOCUMENTID)));
                     mManager->endTransaction();
                     mManager->deleteConnection(false);
+                    break;
                 }
                 catch (CardResetError e)
                 {
