@@ -209,7 +209,7 @@ repeat:
 		{
 			SCardLog::writeLog("[%i:%i][%s:%d] %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, e.what());
 			mManager->endTransaction();
-			this->sleep(1);
+			pause(1);
 			mManager->reconnect();
 			goto repeat;
 		}
@@ -2267,7 +2267,7 @@ uint EstEIDManager::getTokenCount(bool forceRefresh)
 	while (mManager->getTransactionId() != 0)
 	{
 		SCardLog::writeLog("[%i:%i][%s:%d] Card in use wating", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
-		sleep(1);
+		pause(1);
 	}
 	uint count = this->mManager->getReaderCount(forceRefresh);
 	SCardLog::writeLog("[%i:%i][%s:%d] Total tokens %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, count);
@@ -2502,6 +2502,7 @@ std::vector<Token> EstEIDManager::getTokenList()
                 catch (CardResetError e)
                 {
                     SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, y);
+                    pause(5);
                     mManager->resetCurrentConnection();
                     continue;
                 }
@@ -2563,7 +2564,7 @@ unsigned int EstEIDManager::getConnectionID()
 		return mManager->getConnectionID();
 }
 
-void EstEIDManager::sleep(int sec)
+void EstEIDManager::pause(int sec)
 {
 	log();
 #ifdef WIN32

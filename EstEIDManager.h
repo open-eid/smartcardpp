@@ -148,7 +148,7 @@ private:
 	std::string getSurNameFromAuthCertificate();
 	std::string getPersonalCodeFromAuthCertificate();
 	std::vector<std::string> split(const std::string &s, char delim);
-	void sleep(int sec);
+	void pause(int sec);
 	unsigned int getTransactionID();
 	unsigned int getConnectionID();
 	void checkPinPadDetection();
