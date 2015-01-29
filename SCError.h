@@ -64,5 +64,10 @@ class UnsupportedCardHashCombination: public std::runtime_error
 public:
     UnsupportedCardHashCombination() : std::runtime_error("Card does not support provided hash type"){}
 };
+class UnsupportedHashAlgorythm: public std::runtime_error
+{
+public:
+    UnsupportedHashAlgorythm() : std::runtime_error("Unsupported hash provided"){}
+};
 
 #endif

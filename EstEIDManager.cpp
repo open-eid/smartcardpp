@@ -322,6 +322,9 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 	byte hashHdSHA256[] = {0x30,0x31,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x01,0x05,0x00,0x04,0x20};
 	byte hashHdSHA384[] = {0x30,0x41,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x02,0x05,0x00,0x04,0x30};
 	byte hashHdSHA512[] = {0x30,0x51,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x03,0x05,0x00,0x04,0x40};
+    
+    AlgType providedHashAlg = getHashType(hash);
+    SCardLog::writeLog("[%i:%i][%s:%d] Provided hash alg: %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, providedHashAlg);
 
 	ByteVec cmd, header;
 	if (keyId == 0 )
@@ -2627,3 +2630,18 @@ void EstEIDManager::checkExtendedAPDUSupport()
     }
 }
 
+EstEIDManager::AlgType EstEIDManager::getHashType(const ByteVec &hash)
+{
+    size_t hashLength = hash.size();
+    
+    switch(hashLength)
+    {
+        case 16: return MD5;
+        case 20: return SHA1;
+        case 28: return SHA224;
+        case 32: return SHA256;
+        case 48: return SHA384;
+        case 64: return SHA512;
+        default: throw UnsupportedHashAlgorythm();
+    }
+}
