@@ -249,7 +249,6 @@ public:
 	std::vector<Token> getTokenList();
 	bool isDigiID();
 	Certificate *getCertificateObject(KeyType keyId);
-    EstEIDManager::AlgType getHashType(const ByteVec &hash);
 };
 
 #endif
