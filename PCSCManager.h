@@ -50,6 +50,10 @@
 #include "SCardLog.h"
 #include "helperMacro.h"
 
+#ifndef EINVAL
+    #define	EINVAL		22
+#endif
+
 
 #ifndef CM_IOCTL_GET_FEATURE_REQUEST
 
