@@ -127,6 +127,7 @@ private:
 #ifdef WIN32
 	int gettimeofday(struct timeval *tv, struct timezone *tz);
 #elif __APPLE__
+    int errno;
     void macosx_ver(char *darwinversion, osxver *osxversion ) ;
     char *osversionString(void);
 #endif
