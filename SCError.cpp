@@ -50,6 +50,11 @@ void SCError::check(long err, int cid, int tid)
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_RESET_CARD", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
+    else if((int)err == SCARD_W_UNPOWERED_CARD)
+    {
+        SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_UNPOWERED_CARD", cid, tid, __FUNC__, __LINE__, err);
+        throw CardResetError();
+    }
     else if((int)err == SCARD_E_NOT_TRANSACTED)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_NOT_TRANSACTED", cid, tid, __FUNC__, __LINE__, err);
@@ -83,7 +88,7 @@ void SCError::check(long err, int cid, int tid)
     else if((int)err == SCARD_E_READER_UNAVAILABLE)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_READER_UNAVAILABLE", cid, tid, __FUNC__, __LINE__, err);
-        throw NoCardInReaderError();
+        throw CardResetError();
     }
     else if((int)err == SCARD_E_SHARING_VIOLATION)
     {
