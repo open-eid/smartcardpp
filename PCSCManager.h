@@ -50,11 +50,6 @@
 #include "SCardLog.h"
 #include "helperMacro.h"
 
-#ifndef EINVAL
-    #define	EINVAL		22
-#endif
-
-
 #ifndef CM_IOCTL_GET_FEATURE_REQUEST
 
 // FIXME: We should use internal-winscard.h from OpenSC project instead
@@ -127,7 +122,7 @@ private:
 #ifdef WIN32
 	int gettimeofday(struct timeval *tv, struct timezone *tz);
 #elif __APPLE__
-    int errno;
+    
     void macosx_ver(char *darwinversion, osxver *osxversion ) ;
     char *osversionString(void);
 #endif

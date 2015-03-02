@@ -14,6 +14,9 @@
 
 using std::string;
 
+#ifndef EINVAL
+    #define	EINVAL		22
+#endif
 #define log() (SCardLog::writeLog("[%i:%i][%s:%d]", connectionID, transactionID, __FUNC__, __LINE__))
 
 PCSCManager::PCSCManager()
@@ -341,7 +344,16 @@ void PCSCManager::connect(SCARDHANDLE existingHandle)
 void PCSCManager::reconnect()
 {
 	log();
+#ifdef __APPLE__
+    DWORD currentProto = SCARD_PROTOCOL_T0;
+    SCardLog::writeLog("[%i:%i][%s:%d] SCardDisconnect", connectionID, transactionID, __FUNC__, __LINE__);
+    SCardDisconnect(this->hScard, SCARD_RESET_CARD);
+    SCardLog::writeLog("[%i:%i][%s:%d] SCardConnect to index %i", connectionID, transactionID, __FUNC__, __LINE__, cIndex);
+    SCError::check(SCardConnect(hContext, mReaderStates[cIndex].szReader, SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &this->hScard, &currentProto), connectionID, transactionID);
+    proto = currentProto;
+#else
 	SCError::check(SCardReconnect(this->hScard, SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, SCARD_RESET_CARD, &this->proto), connectionID, transactionID);
+#endif
 }
 
 //Reconnect with card and set spetsified SCARD_PROTO
@@ -977,6 +989,8 @@ void PCSCManager::macosx_ver(char *darwinversion, osxver *osxversion )
      numbers ahead of the minor version, and aligning its own minor with the
      sub-version.
      */
+    
+    int errno;
     char firstelm[2]= {0,0},secElm[2]={0,0};
     
     if (strlen(darwinversion) < 5 ) {
@@ -994,7 +1008,7 @@ void PCSCManager::macosx_ver(char *darwinversion, osxver *osxversion )
         *t++ = *s++;
     int maj=0, min=0;
     maj= (int)strtol(firstelm, (char **)NULL, 10);
-    if ( maj == 0 && errno == EINVAL ) {
+    if ( maj == 0 && errno != EINVAL ) {
         fprintf(stderr,"%s Error during conversion of version string\n",__PRETTY_FUNCTION__);
         fflush(stdout);
         exit(4);
