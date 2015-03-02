@@ -347,17 +347,26 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 			break;
 		case SHA256:
 			if(_card_version < VER_1_1)
-			  throw UnsupportedCardHashCombination();
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-256 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
+                throw UnsupportedCardHashCombination();
+            }
 			header = MAKEVECTOR(hashHdSHA256);
 			break;
 		case SHA384:
 			if(_card_version < VER_3_0)
-			  throw UnsupportedCardHashCombination();
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-384 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
+                throw UnsupportedCardHashCombination();
+            }
 			header = MAKEVECTOR(hashHdSHA384);
 			break;
 		case SHA512:
 			if(_card_version < VER_3_0)
-			  throw UnsupportedCardHashCombination();
+            {
+                SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-512 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
+                throw UnsupportedCardHashCombination();
+            }
 			header = MAKEVECTOR(hashHdSHA512);
 			break;
 		case SSL:
@@ -1321,6 +1330,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId, co
         try
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Signing iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
+            setCardVersion();
             mManager->beginTransaction();
             prepareSign_internal(keyId,pin);
             tmp = sign_internal(type,keyId,hash);
