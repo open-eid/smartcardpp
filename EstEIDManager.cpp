@@ -354,7 +354,7 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 			header = MAKEVECTOR(hashHdSHA256);
 			break;
 		case SHA384:
-			if(_card_version < VER_3_0)
+			if(_card_version < VER_1_1)
             {
                 SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-384 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
                 throw UnsupportedCardHashCombination();
@@ -362,7 +362,7 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 			header = MAKEVECTOR(hashHdSHA384);
 			break;
 		case SHA512:
-			if(_card_version < VER_3_0)
+			if(_card_version < VER_1_1)
             {
                 SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-512 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
                 throw UnsupportedCardHashCombination();
@@ -890,7 +890,7 @@ string EstEIDManager::readDocumentID()
             string ret = "";
 
             mManager->beginTransaction();
-            //checkProtocol();
+            checkProtocol();
             
             ret = this->readRecord_internal(DOCUMENTID);
             mManager->endTransaction();
@@ -1337,7 +1337,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId, co
             mManager->endTransaction(false);
             return tmp;
         }
-        catch(CardResetError &e)
+        catch(CardResetError)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->resetCurrentConnection();
