@@ -193,6 +193,7 @@ public:
 	bool m_blocked;
 	bool m_badinput;
 	bool m_aborted;
+	bool m_timeout;
 	AuthError(byte a,byte b) : CardError(a,b), m_blocked(false),m_badinput(false),m_aborted(false) {};
 	AuthError(byte a,byte b,bool block) : CardError(a,b), m_blocked(block),m_badinput(false),m_aborted(false) {};
 	AuthError(CardError _base) : CardError(_base) , m_blocked(false),m_badinput(false),m_aborted(false) {}
