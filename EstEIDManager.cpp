@@ -2204,40 +2204,15 @@ bool EstEIDManager::isExtAPDUSupported()
     
     if(!noExtAPDU)
     {
-        std::string readerName = mManager->getReaderName();
         if(this->_card_version <= VER_3_0_UPPED_TO_3_4)
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Card is older than 3.5 %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, this->getCardName().c_str());
+            SCardLog::writeLog("[%i:%i][%s:%d] Card is older than 3.5", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
             return false;
         }
         else
         {
-            SCardLog::writeLog("[%i:%i][%s:%d] Card 3.5 or newer and reader name is %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readerName.c_str());
-        }
-
-        if(readerName.find("OMNIKEY CardMan 1021") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("OMNIKEY Smart Card Reader") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("SCM Microsystems Inc. SCR33x USB") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Gemalto Ezio Shield") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Oz776") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Lenovo Integrated Smart Card Reader") != std::string::npos)
-        {
-            return true;
+            SCardLog::writeLog("[%i:%i][%s:%d] Card 3.5 or newer", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+			return true;
         }
     }
 #endif
