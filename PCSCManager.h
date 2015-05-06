@@ -190,6 +190,7 @@ public:
 class AuthError :public CardError
 {
 public:
+//FIXME: Refactor to enum and single variable. IB-2880
 	bool m_blocked;
 	bool m_badinput;
 	bool m_aborted;
