@@ -120,7 +120,6 @@ public:
 
 private:
 	bool noPinPad;
-    bool noExtAPDU;
 	PCSCManager *mManager;
 	CardBase *cBase;
 	ByteVec authCert;
@@ -139,7 +138,6 @@ private:
 	void checkProtocol();
 	bool getRetryCounts_internal(byte &puk,byte &pinAuth,byte &pinSign);
 	ByteVec readEFAndTruncate(unsigned int fileLen);
-	bool isExtAPDUSupported();
 	std::string readRecord_internal(int recordID);
 	CardVersion _card_version;
 	bool extAPDUSupported;
