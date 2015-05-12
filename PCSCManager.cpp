@@ -750,7 +750,12 @@ void PCSCManager::execPinCommand(bool verify, std::vector<byte> &cmd)
                 // 0x00 - Timeout (SCM)
                 // 0x01 - Cancel pressed (OK, SCM)
 		AuthError err(SW1,SW2);
-		if (SW1==0x64 && ( SW2 == 0x00 || SW2 == 0x01 ) )
+		if (SW1==0x64 && SW2 == 0x00)
+		{
+			err.m_timeout = true;
+			throw err;
+		}
+		if (SW1==0x64 && SW2 == 0x01)
 		{
 			err.m_aborted = true;
 			throw err;

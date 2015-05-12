@@ -354,7 +354,7 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 			header = MAKEVECTOR(hashHdSHA256);
 			break;
 		case SHA384:
-			if(_card_version < VER_3_0)
+			if(_card_version < VER_1_1)
             {
                 SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-384 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
                 throw UnsupportedCardHashCombination();
@@ -362,7 +362,7 @@ ByteVec EstEIDManager::sign_internal(AlgType type,KeyType keyId,const ByteVec &h
 			header = MAKEVECTOR(hashHdSHA384);
 			break;
 		case SHA512:
-			if(_card_version < VER_3_0)
+			if(_card_version < VER_1_1)
             {
                 SCardLog::writeLog("[%i:%i][%s:%d] UnsupportedCardHashCombination SHA-512 %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
                 throw UnsupportedCardHashCombination();
@@ -443,8 +443,7 @@ ByteVec EstEIDManager::RSADecrypt_internal(const ByteVec &cryptogram)
 	{
 		if(extAPDUSupported)
 		{
-			
-			if(mManager->isT1Protocol())
+			if(mManager->isT1Protocol() && _card_version > VER_3_0_UPPED_TO_3_4)
 			{
 				SCardLog::writeLog("[%i:%i][%s:%d] Decrypting using extended APDU", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 				result = RSADecrypt_extended(cryptogram);
@@ -810,7 +809,7 @@ void EstEIDManager::checkProtocol()
         mManager->beginTransaction();
 	}
 
-	if(this->_card_version >= VER_3_5 && !mManager->isT1Protocol() && mManager->isOwnConnection() && this->extAPDUSupported)
+	if(this->_card_version > VER_3_0_UPPED_TO_3_4 && !mManager->isT1Protocol() && mManager->isOwnConnection() && this->extAPDUSupported)
 	{
 		SCardLog::writeLog("[%i:%i][%s:%d] Trying to change protocol to T1.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
 		try
@@ -890,7 +889,7 @@ string EstEIDManager::readDocumentID()
             string ret = "";
 
             mManager->beginTransaction();
-            //checkProtocol();
+            checkProtocol();
             
             ret = this->readRecord_internal(DOCUMENTID);
             mManager->endTransaction();
@@ -1137,14 +1136,14 @@ ByteVec EstEIDManager::readEFAndTruncate(unsigned int fileLen)
 	  throw PCSCManagerFailure();
 	
 	ByteVec ret;
-	if(this->extAPDUSupported && mManager->isT1Protocol())
+	if(this->extAPDUSupported && _card_version > VER_3_0_UPPED_TO_3_4 && mManager->isT1Protocol())
 	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Card version is higher than 3.4. Reading in extended mode", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+		SCardLog::writeLog("[%i:%i][%s:%d] Reading in extended mode", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
 		ret = cBase->readEFEx(fileLen);
 	}
 	else
 	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Card version is lower than 3.5. Reading in standart mode", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+		SCardLog::writeLog("[%i:%i][%s:%d] Reading in standart mode.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, _card_version);
 		ret = cBase->readEF(fileLen);
 	}
 	if (ret.size() > 128) { //assume ASN sequence encoding with 2-byte length
@@ -1165,6 +1164,7 @@ ByteVec EstEIDManager::getAuthCert()
     }
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
+	setCardVersion();
     
     for(int i = 0; i < APDU_RETRY_COUNT; i++)
     {
@@ -1227,6 +1227,8 @@ ByteVec EstEIDManager::getSignCert()
     }
 	ByteVec tmp;
 	CardBase::FCI fileInfo = {0, 0, 0, 0};
+
+	setCardVersion();
     
     for(int i = 0; i < APDU_RETRY_COUNT; i++)
     {
@@ -1337,7 +1339,7 @@ ByteVec EstEIDManager::sign(const ByteVec &hash, AlgType type, KeyType keyId, co
             mManager->endTransaction(false);
             return tmp;
         }
-        catch(CardResetError &e)
+        catch(CardResetError)
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Card was reset. Will retry %i", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
             mManager->resetCurrentConnection();
@@ -1981,16 +1983,6 @@ void EstEIDManager::setCardVersion()
 		this->_card_version = VER_3_5;
 	else
 		this->_card_version = VER_INVALID;
-	SCardLog::writeLog("[%i:%i][%s:%d] Card version: %s, ATR version %s. Detecting extended APDU support", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, getCardName().c_str(), getATRName(currentATR).c_str());
-	extAPDUSupported = this->isExtAPDUSupported();
-	if(extAPDUSupported == true)
-	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU supported", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, getCardName().c_str());
-	}
-	else
-	{
-		SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU is not supported", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, getCardName().c_str());
-	}
 
 	SCardLog::writeLog("[%i:%i][%s:%d] Card version: %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, this->getCardName().c_str());
 }
@@ -2194,55 +2186,6 @@ void EstEIDManager::sendApplicationIdentifierV3_5()
 		SCardLog::writeLog("[%i:%i][%s:%d] Runtime error: %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, re.what());
 		throw re;
 	}
-}
-
-bool EstEIDManager::isExtAPDUSupported()
-{
-	log();
-    
-#ifndef __APPLE__
-    
-    if(!noExtAPDU)
-    {
-        std::string readerName = mManager->getReaderName();
-        if(this->_card_version <= VER_3_0_UPPED_TO_3_4)
-        {
-            SCardLog::writeLog("[%i:%i][%s:%d] Card is older than 3.5 %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, this->getCardName().c_str());
-            return false;
-        }
-        else
-        {
-            SCardLog::writeLog("[%i:%i][%s:%d] Card 3.5 or newer and reader name is %s", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, readerName.c_str());
-        }
-
-        if(readerName.find("OMNIKEY CardMan 1021") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("OMNIKEY Smart Card Reader") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("SCM Microsystems Inc. SCR33x USB") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Gemalto Ezio Shield") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Oz776") != std::string::npos)
-        {
-            return true;
-        }
-        if(readerName.find("Lenovo Integrated Smart Card Reader") != std::string::npos)
-        {
-            return true;
-        }
-    }
-#endif
-    SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU not supported", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
-	return false;
 }
 
 std::string EstEIDManager::getReaderName()
@@ -2630,10 +2573,11 @@ void EstEIDManager::checkExtendedAPDUSupport()
     if (getenv("SMARTCARDPP_EXTAPDU") == NULL)
     {
         SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU support turned off", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
-        noExtAPDU = true;
+		extAPDUSupported = false;
     }
     else
     {
-        noExtAPDU = false;
+		SCardLog::writeLog("[%i:%i][%s:%d] Extended APDU support turned on", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+		extAPDUSupported = true;
     }
 }
