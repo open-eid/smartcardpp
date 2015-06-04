@@ -662,7 +662,7 @@ void PCSCManager::execPinCommand(bool verify, std::vector<byte> &cmd)
 	BYTE sbuf[256], rbuf[256];
 	DWORD ioctl = 0, ioctl2 = 0, rlen=sizeof(rbuf), count = 0;
 	size_t offset = 0;
-	
+    
 	// build PC/SC block. FIXME: hardcoded for EstEID!!!
 	if (verify)
 	{
@@ -685,8 +685,8 @@ void PCSCManager::execPinCommand(bool verify, std::vector<byte> &cmd)
 
 		pin_verify->wLangId = (uint16_t)this->readerLanguageId;
 
-		/* Set proper command sizes */
-		pin_verify->ulDataLength = (uint32_t)cmd.size();
+		/* Set proper command sizes (APDU header + placeholder for Lc) */
+		pin_verify->ulDataLength = (uint32_t)cmd.size() + 1;
 		count = sizeof(PIN_VERIFY_STRUCTURE) + pin_verify->ulDataLength - 1;
 		offset = (byte *)(pin_verify->abData) - (byte *)pin_verify;
 
@@ -716,8 +716,8 @@ void PCSCManager::execPinCommand(bool verify, std::vector<byte> &cmd)
 		pin_modify->bMsgIndex2 = 0x01;
 		pin_modify->bMsgIndex3 = 0x02;
 		pin_modify->wLangId = (uint16_t)this->readerLanguageId;
-		/* Set proper command sizes */
-		pin_modify->ulDataLength = (uint32_t)cmd.size();
+		/* Set proper command sizes (APDU header + placeholder for Lc) */
+		pin_modify->ulDataLength = (uint32_t)cmd.size() + 1;
 		count = sizeof(PIN_MODIFY_STRUCTURE) + pin_modify->ulDataLength - 1;
 		offset = (byte *)pin_modify->abData - (byte *)pin_modify;
 	}
@@ -725,6 +725,10 @@ void PCSCManager::execPinCommand(bool verify, std::vector<byte> &cmd)
 	/* Copy APDU itself */
 	for (size_t i = 0; i < cmd.size(); i++)
 		sbuf[offset + i] = cmd[i];
+    
+    /* Add Lc byte placeholder to APDU (will be recalculated by the IFD handler driver) */
+    sbuf[offset + cmd.size() + 1] = 0x00;
+
 
 	ByteVec tmp(MAKEVECTOR(sbuf));
 	SCardLog::writeAPDULog(__FUNC__, __LINE__, tmp, getProtocol(), true, getConnectionIndex(), getTransactionId());
