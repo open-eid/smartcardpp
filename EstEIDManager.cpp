@@ -2202,13 +2202,22 @@ std::string EstEIDManager::getReaderName()
 }
 
 uint EstEIDManager::getTokenCount(bool forceRefresh)
-{
+{    
 	if(mManager == NULL)
 	{
 		try
 		{
+            cBase = NULL;
+            authCertObj = NULL;
+            signCertObj = NULL;
+            SCardLog::writeLog("Trying to create new PCSManager...");
+            mManager = new PCSCManager();
+            SCardLog::writeLog("[%i:%i][%s:%d] Creating default connection", getConnectionID(), getTransactionID(), __FUNC__, __LINE__);
+            cBase = new CardBase(mManager);
 			this->_card_version = EstEIDManager::VER_INVALID;
 			this->extAPDUSupported = false;
+            checkPinPadDetection();
+            checkExtendedAPDUSupport();
             return 0;
 		}
 		catch(...)
