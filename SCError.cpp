@@ -45,57 +45,57 @@ void SCError::check(long err, int cid, int tid)
 	if(err)
 		SCardLog::writeMessage("[%i:%i][%s:%d] ERROR CODE RECIEVED 0x%08X", cid, tid, __FUNC__, __LINE__, err);
     
-    if((int)err == SCARD_W_RESET_CARD)
+    if((uint32_t)err == (uint32_t)SCARD_W_RESET_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_RESET_CARD", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_W_UNPOWERED_CARD)
+    else if((uint32_t)err == (uint32_t)SCARD_W_UNPOWERED_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_UNPOWERED_CARD", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_E_NOT_TRANSACTED)
+    else if((uint32_t)err == (uint32_t)SCARD_E_NOT_TRANSACTED)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_NOT_TRANSACTED", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_E_NO_SMARTCARD)
+    else if((uint32_t)err == (uint32_t)SCARD_E_NO_SMARTCARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_NO_SMARTCARD", cid, tid, __FUNC__, __LINE__, err);
         throw NoCardInReaderError();
     }
-    else if((int)err == SCARD_W_REMOVED_CARD)
+    else if((uint32_t)err == (uint32_t)SCARD_W_REMOVED_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_REMOVED_CARD", cid, tid, __FUNC__, __LINE__, err);
         throw NoCardInReaderError();
     }
-    else if((int)err == SCARD_W_UNRESPONSIVE_CARD)
+    else if((uint32_t)err == (uint32_t)SCARD_W_UNRESPONSIVE_CARD)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_W_UNRESPONSIVE_CARD", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_E_NO_READERS_AVAILABLE)
+    else if((uint32_t)err == (uint32_t)SCARD_E_NO_READERS_AVAILABLE)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_NO_READERS_AVAILABLE", cid, tid, __FUNC__, __LINE__, err);
         throw NoReadersAvailible();
     }
-    else if((int)err == ERROR_NO_MEDIA_IN_DRIVE)
+    else if((uint32_t)err == (uint32_t)ERROR_NO_MEDIA_IN_DRIVE)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] ERROR_NO_MEDIA_IN_DRIVE", cid, tid, __FUNC__, __LINE__, err);
         throw NoCardInReaderError();
     }
-    else if((int)err == SCARD_E_READER_UNAVAILABLE)
+    else if((uint32_t)err == (uint32_t)SCARD_E_READER_UNAVAILABLE)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_READER_UNAVAILABLE", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_E_SHARING_VIOLATION)
+    else if((uint32_t)err == (uint32_t)SCARD_E_SHARING_VIOLATION)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_SHARING_VIOLATION", cid, tid, __FUNC__, __LINE__, err);
         throw CardResetError();
     }
-    else if((int)err == SCARD_E_TIMEOUT)
+    else if((uint32_t)err == (uint32_t)SCARD_E_TIMEOUT)
     {
         SCardLog::writeMessage("[%i:%i][%s:%d] SCARD_E_TIMEOUT", cid, tid, __FUNC__, __LINE__, err);
         return;
