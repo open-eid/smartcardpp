@@ -957,35 +957,18 @@ string EstEIDManager::readCardName(bool firstNameFirst)
         try
         {
             SCardLog::writeLog("[%i:%i][%s:%d] Reading card name iteraction %i.", getConnectionID(), getTransactionID(), __FUNC__, __LINE__, i);
-            string tmp = "";
             string ret = "";
             string firstName = "";
             string surName = "";
             mManager->beginTransaction();
-            tmp = this->readRecord_internal(DOCUMENTID);
-            
-            if(tmp.at(0) == 'N')
-            {
-                _card_version = VER_1_1;
-            }
-            if(_card_version == EstEIDManager::VER_1_1)
-            {
-                firstName = this->getFirstNameFromAuthCertificate();
-                surName = this->getSurNameFromAuthCertificate();
-            }
-            else
-            {
-                firstName = this->readRecord_internal(FIRSTNAME);
-                surName = this->readRecord_internal(SURNAME);
-                mManager->endTransaction();
-            }
-            firstName.erase(firstName.find_last_not_of(' ')+1);
-            surName.erase(surName.find_last_not_of(' ')+1);
+            firstName = this->getFirstNameFromAuthCertificate();
+            surName = this->getSurNameFromAuthCertificate();
+
             if (firstNameFirst)
                 ret = firstName + " " + surName;
             else
                 ret = surName + " " + firstName;
-            
+
             return ret;
         }
         catch (CardResetError e)
