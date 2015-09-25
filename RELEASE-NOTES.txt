@@ -1,3 +1,8 @@
+SmartcardPP version 3.12 release notes
+--------------------------------------
+
+- Method readCardName (in EstEIDManager) should always use client cert to extract the user name
+
 SmartcardPP version 3.8.1 release notes
 --------------------------------------
 
